@@ -56,12 +56,12 @@ network.host: 10.100.100.103
 discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 ```
 
-> Es服务器需**设置防火墙**只允许集群之间和Server的连接（9200,9300端口）。
+> Es服务器需**设置防火墙**只允许集群之间和Server以及Web服务器的连接（9200,9300端口）。
 
 
 ## MongoDB配置
 安装运行实例即可无需其他操作。[下载地址][3]
-> MongoDB服务器需**设置防火墙**只允许Server集群和web服务器的连接。
+> MongoDB服务器需**设置防火墙**只允许Server集群和Web服务器的连接。
 
 ## WebServer安装向导
 
