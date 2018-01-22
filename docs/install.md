@@ -56,12 +56,12 @@ network.host: 10.100.100.103
 discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 ```
 
-> Es服务器需**设置防火墙**只允许集群之间和Server的连接（9200,9300端口）。
+> Es服务器需**设置防火墙**只允许集群之间和Server以及Web服务器的连接（9200,9300端口）。
 
 
 ## MongoDB配置
 安装运行实例即可无需其他操作。[下载地址][3]
-> MongoDB服务器需**设置防火墙**只允许Server集群和web服务器的连接。
+> MongoDB服务器需**设置防火墙**只允许Server集群和Web服务器的连接。
 
 ## WebServer安装向导
 
@@ -83,6 +83,7 @@ discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 完成以上所有步骤且没有任何报错后即可开始安装Agent，建议小规模部署测试**确定稳定后**再批量覆盖。
 
 ```
+# 在主机列表添加处可查看自动生成的安装命令
 # 例WebServer为http://10.100.100.254:8080
 # Windows安装命令
 cd %SystemDrive% & certutil -urlcache -split -f http://10.100.100.254/json/download?type=daemon^&system=windows^&platform=64^&action=download daemon.exe & daemon.exe -netloc 10.100.100.254:443 -install
