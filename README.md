@@ -1,7 +1,7 @@
 # 驭龙 HIDS 
 
 
-[![License](https://img.shields.io/aur/license/yaourt.svg?style=flat-square)](https://github.com/ysrc/yulong-hids/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-GPL%20v2-blue.svg?style=flat-square)](https://github.com/ysrc/yulong-hids/blob/master/LICENSE)
 [![Golang](https://img.shields.io/badge/Golang-1.9-yellow.svg?style=flat-square)](https://www.golang.org/) [![Mongodb](https://img.shields.io/badge/MongoDB-3.4-red.svg?style=flat-square)](https://www.mongodb.com/download-center?jmp=nav) [![elasticsearch](https://img.shields.io/badge/Elasticsearch-5.6.4-green.svg?style=flat-square)](https://www.elastic.co/downloads/elasticsearch)
 
 
