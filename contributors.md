@@ -5,3 +5,4 @@
 Avatar | ID | Address
 ---- | ---- | ----
 ![](https://avatars2.githubusercontent.com/u/5896323?s=40) | [kingjin](https://github.com/kingjin) | [https://www.cnblogs.com/jzb-dev](https://www.cnblogs.com/jzb-dev)
+![](https://avatars2.githubusercontent.com/u/7495169?s=40) | [superhuahua](https://github.com/superhuahua) | [https://github.com/superhuahua](https://github.com/superhuahua)
