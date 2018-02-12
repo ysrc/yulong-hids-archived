@@ -1,0 +1,91 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "g+4AgCjxvotVLox53tnXxjXuBnQ=",
+			"path": "github.com/astaxie/beego",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "zgHK1vxUJDZTXAPCw+Bls7St0Ks=",
+			"path": "github.com/astaxie/beego/config",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "9J9Yez8RBxCcxynZL4KCW0+ZTRU=",
+			"path": "github.com/astaxie/beego/context",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "MXGs366RP4mY+x7vtP8V0ko4iPM=",
+			"path": "github.com/astaxie/beego/context/param",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "Nx9dKuRvpEeNHhnpTb0yVy1t/JE=",
+			"path": "github.com/astaxie/beego/grace",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "aNA3HBmv8A9mezI/ZW92Po9I5GE=",
+			"path": "github.com/astaxie/beego/logs",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "qGvZUP7mTKGvMa3ui7kqLJQiXNc=",
+			"path": "github.com/astaxie/beego/session",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "EOoY9qbCsWnu5FlZZnMKUKkLcMk=",
+			"path": "github.com/astaxie/beego/toolbox",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "W7HBzu7HlF18vCfNPgax7xvHXB0=",
+			"path": "github.com/astaxie/beego/utils",
+			"revision": "d96289a81bf67728cff7a19b067aaecc65a62ec6",
+			"revisionTime": "2017-07-18T16:56:48Z"
+		},
+		{
+			"checksumSHA1": "1D8GzeoFGUs5FZOoyC2DpQg8c5Y=",
+			"path": "gopkg.in/mgo.v2",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "YsB2DChSV9HxdzHaKATllAUKWSI=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "XQsrqoNT1U0KzLxOFcAZVvqhLfk=",
+			"path": "gopkg.in/mgo.v2/internal/json",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "LEvMCnprte47qdAxWvQ/zRxVF1U=",
+			"path": "gopkg.in/mgo.v2/internal/sasl",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "+1WDRPaOphSCmRMxVPIPBV4aubc=",
+			"path": "gopkg.in/mgo.v2/internal/scram",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		}
+	],
+	"rootPath": "yulong-hids/web"
+}
