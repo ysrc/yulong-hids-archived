@@ -1,16 +1,17 @@
-# 驭龙 HIDS [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/ysrc/yulong-hids/blob/master/LICENSE)
-----------
-**驭龙HIDS**是一款由 YSRC 开源的入侵检测系统，由`Agent`，`Daemon`和`Server`三大部分组成，集异常检测、监控管理为一体，拥有异常行为发现、快速阻断、高级分析等功能，可从多个维度行为信息中发现入侵行为。
+# 驭龙 HIDS 
+
+
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/ysrc/yulong-hids/blob/master/LICENSE)
+[![Golang](https://img.shields.io/badge/Golang-1.9-yellow.svg?style=flat-square)](https://www.golang.org/) [![Mongodb](https://img.shields.io/badge/MongoDB-3.4-red.svg?style=flat-square)](https://www.mongodb.com/download-center?jmp=nav) [![elasticsearch](https://img.shields.io/badge/Elasticsearch-5.6.4-green.svg?style=flat-square)](https://www.elastic.co/downloads/elasticsearch)
+
+
+**驭龙HIDS**是一款由 YSRC 开源的入侵检测系统，由 `Agent`， `Daemon`， `Server` 和 `Web` 四个部分组成，集异常检测、监控管理为一体，拥有异常行为发现、快速阻断、高级分析等功能，可从多个维度行为信息中发现入侵行为。
 
 **Agent**为采集者角色，收集服务器信息、开机启动项、计划任务、监听端口、服务、登录日志、用户列表，实时监控文件操作行为、网络连接、执行命令，初步筛选整理后通过RPC协议传输到Server节点。
 
 **Daemon**为守护服务进程，为Agent提供进程守护、静默环境部署作用，其任务执行功能通过接收服务端的指令实现Agent热更新、阻断功能和自定义命令执行等，任务传输过程使用RSA进行加密。
 
 **Server**为整套系统的大脑，支持横向扩展分布式部署，解析用户定义的规则（已内置部分基础规则）对从各Agent接收到的信息和行为进行分析检测和保存，可从各个维度的信息中发现webshell写入行为、异常登录行为、异常网络连接行为、异常命令调用行为等，从而实现对入侵行为实时预警。
-
-
-[![Golang](https://img.shields.io/badge/Golang-1.9-yellow.svg)](https://www.golang.org/) [![Mongodb](https://img.shields.io/badge/MongoDB-3.4-red.svg)](https://www.mongodb.com/download-center?jmp=nav) [![elasticsearch](https://img.shields.io/badge/Elasticsearch-5.6.4-green.svg)](https://www.elastic.co/downloads/elasticsearch)
-
 
 ## 文档
 
@@ -95,8 +96,9 @@
 本项目经过 YSRC 测试和部署，但由于企业网络架构与部署环境之间的差异，我们无法保证本项目在贵司环境中的稳定性及有效性。
 使用前请先自行测试和改动，对应用本系统可能导致的损失 YSRC/同程安全应急响应中心/同程网络科技股份有限公司概不负责。
 
-本项目尚未正式开源，目前开放二进制部署包测试。等走完公司开源流程，再开放源代码。  
-扫描下方二维码关注YSRC公众号，回复 驭龙 ，会有人拉你进驭龙的微信讨论群。
+本项目现已放出所有源码，但是未发布 release， 测试和使用请等待正式的 release 发布。
+目前正在小范围的部署测试，已有多家公司及个人参与测试。
+想参与测试的同学，请扫描下方二维码关注YSRC公众号，回复 驭龙 ，会有人拉你进驭龙的微信讨论群。
 
 
 ![](./docs/ysrc.png)
