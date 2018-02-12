@@ -697,5 +697,5 @@ module_init(monitor_execve_init);
 module_exit(monitor_execve_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("mlsm<454667707@qq.com>");
+MODULE_AUTHOR("ljh48026 <ljh48026@ly.com>");
 MODULE_DESCRIPTION("Monitor Syscall sys_execve");
