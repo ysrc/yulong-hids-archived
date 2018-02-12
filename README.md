@@ -1,4 +1,4 @@
-# 驭龙 HIDS [![License](https://img.shields.io/aur/license/yaourt.svg)](https://github.com/ysrc/xunfeng-hids/blob/master/LICENSE)
+# 驭龙 HIDS [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://github.com/ysrc/yulong-hids/blob/master/LICENSE)
 ----------
 **驭龙HIDS**是一款由 YSRC 开源的入侵检测系统，由`Agent`，`Daemon`和`Server`三大部分组成，集异常检测、监控管理为一体，拥有异常行为发现、快速阻断、高级分析等功能，可从多个维度行为信息中发现入侵行为。
 
