@@ -1,0 +1,91 @@
+YSRC is pleased to support the open source community by making yulong-hids available.
+Copyright (C) 2018 Tongcheng Network Technology Co.,ltd.  All rights reserved.
+If you have downloaded a copy of the yulong-hids binary from Tongcheng, please note that the yulong-hids binary is licensed under the BSD 3-Clause License.
+If you have downloaded a copy of the yulong-hids source code from Tongcheng, please note that yulong-hids source code is licensed under the BSD 3-Clause License, except for the third-party components listed below which are subject to different license terms.  Your integration of yulong-hids into your own projects may require compliance with the BSD 3-Clause License, as well as the other licenses applicable to the third-party components included within yulong-hids.
+A copy of the BSD 3-Clause License is included in this file.
+
+Other dependencies and licenses:
+
+The MIT License
+https://github.com/StackExchange/wmi Copyright (c) 2013 Stack Exchange
+
+https://github.com/bifurcation/mint Copyright (c) 2016 Richard Barnes
+
+https://github.com/cenkalti/backoff Copyright (c) 2014 Cenk Altı
+
+https://github.com/facebookgo/clock Copyright (c) 2014 Ben Johnson
+
+https://github.com/fatih/color Copyright (c) 2013 Fatih Arslan
+
+https://github.com/go-ole/go-ole Copyright © 2013-2017 Yasuhiro Matsumoto
+
+https://github.com/grandcat/zeroconf Copyright (c) 2016 Stefan Smarzly Copyright (c) 2014 Oleksandr Lobunets
+
+https://github.com/joeshaw/multierror Copyright (c) 2014 Joe Shaw
+
+https://github.com/rubyist/circuitbreaker Copyright (c) 2014 Scott Barron
+
+https://github.com/lucas-clemente/quic-go Copyright (c) 2016 the quic-go authors & Google, Inc.
+
+https://github.com/mattn/go-colorable Copyright (c) 2016 Yasuhiro Matsumoto
+
+https://github.com/mattn/go-isatty Copyright (c) Yasuhiro MATSUMOTO <mattn.jp@gmail.com>
+
+https://github.com/tatsushid/go-fastping Copyright (c) 2013 Tatsushi Demachi
+
+https://github.com/templexxx/reedsolomon Copyright (c) 2017 Templexxx
+Copyright (c) 2015 Klaus Post
+Copyright (c) 2015 Backblaze
+
+https://github.com/templexxx/xor Copyright (c) 2017 Temple3x
+
+https://github.com/valyala/fastrand Copyright (c) 2017 Aliaksandr Valialkin
+
+https://github.com/xtaci/kcp-go Copyright (c) 2015 Daniel Fu
+
+
+BSD 3-Clause
+https://github.com/akrennmair/gopcap Copyright (c) 2009-2011 Andreas Krennmair
+
+https://github.com/fsnotify/fsnotify Copyright (c) 2012 The Go Authors. All rights reserved.
+Copyright (c) 2012 fsnotify Authors. All rights reserved.
+
+https://github.com/miekg/dns copyright (c) 2011 Miek Gieben
+Copyright (c) 2009 The Go Authors
+
+https://github.com/golang/protobuf Copyright 2010 The Go Authors.  All rights reserved.
+
+https://github.com/gogo/protobuf Copyright (c) 2013, The GoGo Authors. All rights reserved.
+Copyright 2010 The Go Authors.  All rights reserved.
+
+
+BSD 2-Clause "Simplified" License
+https://github.com/pkg/errors Copyright (c) 2015, Dave Cheney <dave@cheney.net>
+
+https://github.com/vmihailenco/msgpack Copyright (c) 2013 The github.com/vmihailenco/msgpack Authors
+
+Apache License, Version 2.0
+https://github.com/elastic/beats Copyright (c) 2012–2017 Elastic <http://www.elastic.co>
+
+https://github.com/smallnest/rpcx Copyright  2017  Chao yuepan
+
+
+Mozilla Public License, version 2.0
+https://github.com/hashicorp/golang-lru
+
+No License
+https://github.com/axgle/mahonia
+
+https://github.com/marten-seemann/quic-conn
+
+
+Terms of the BSD 3-Clause License:
+--------------------------------------------------------------------
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of [copyright holder] nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
