@@ -75,16 +75,16 @@
 ├─syscall_hook # 监控执行命令的Linux内核代码
 │  └─test_bench // 方便调试的
 └─web // Web控制台项目
-    ├─conf // 配置文件
-    ├─controllers
-    ├─httpscert // https证书和RSA私钥，内置的会在向导过程中自动替换掉
-    ├─models
-    ├─routers
-    ├─settings
-    ├─static // 静态文件（css，js）
+    ├─conf // web端配置文件
+    ├─controllers // 控制器，负责转发请求，对请求进行处理
+    ├─httpscert // https证书和RSA私钥，内置的会在向导过程中自动更新
+    ├─models // 模型，数据管理和数据库设计
+    ├─routers // 路由
+    ├─settings // 部分全局变量
+    ├─static // 静态文件
     ├─upload_files // agent、daemon、依赖包文件
-    ├─utils
-    └─views // 前端模板
+    ├─utils // 功能模块
+    └─views // 视图层，前端模板
 ```
 
 ## 参与者及致谢
