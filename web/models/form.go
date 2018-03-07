@@ -26,13 +26,13 @@ type EditCfgForm struct {
 type CodeInfo struct {
 	Status int               `json:"status"`
 	Msg    string            `json:"msg"`
-	Data   map[string]string `json:data`
+	Data   map[string]string `json:"data"`
 }
 
 type NewTaskInfo struct {
 	Status int           `json:"status"`
 	Msg    string        `json:"msg"`
-	TaskId bson.ObjectId `json:_id`
+	TaskId bson.ObjectId `json:"_id"`
 }
 
 type SearchForm struct {
