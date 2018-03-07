@@ -1049,3 +1049,8 @@ aside.app-sidebar {
 #sidebar > div.sidebar-menu > ul > li:nth-child(8) > a > div.title {
     color: rgba(255, 255, 255, 0.75);
 }
+
+div.notice table.table > tbody > tr td.v {
+    word-break: break-all;
+    overflow: hidden;
+}
