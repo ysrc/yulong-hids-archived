@@ -5,11 +5,12 @@
 Golang 1.9  
 Windows版本只需编译为32位，代码已做了兼容，可在64位系统中正常工作。
 
-```
-// 依赖
+## 依赖
+
 Go依赖包都集成在相应工程的vendor目录中
 编译Agent需要先安装libpcap-devel
-```
+
+**ps. Windows 下编译 Agent 需要 [winpcap](https://www.winpcap.org/install/default.htm) 支持。且受到 [google/gopacket](https://github.com/google/gopacket) 影响可能会出现一些问题，具体请看 [Q&A#Q1](../qa.md#Q1)**
 
 ## 编译
 ### 客户端（Agent，Daemon、依赖）
@@ -51,6 +52,7 @@ go build -o bin/web --ldflags="-w -s" web/main.go
 ### 内核、驱动
 
 下载地址：[wdk 7600](http://download.microsoft.com/download/4/A/2/4A25C7D5-EFBE-4182-B6A9-AE6850409A78/GRMWDK_EN_7600_1.ISO)
+
 ```
 // win驱动
 准备2008或win7 x64系统，安装 GRMWDK 7600。
