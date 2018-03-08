@@ -1,0 +1,480 @@
+[
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "web进程执行了系统命令，可能为命令执行漏洞或者webshell行为",
+            "level": 0,
+            "name": "WebServer可疑进程启动(windows)"
+        },
+        "rules": {
+            "name": {
+                "data": "^(cmd\\.exe|powershell\\.exe)$",
+                "type": "regex"
+            },
+            "parentname": {
+                "data": "^(w3wp\\.exe|httpd\\.exe|nginx\\.exe|php-cgi\\.exe)$",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "所有服务器从未出现过的进程",
+            "level": 1,
+            "name": "首次出现进程"
+        },
+        "rules": {
+            "name": {
+                "data": "1",
+                "type": "count"
+            }
+        },
+        "source": "process",
+        "system": "all"
+    },
+    {
+        "and": false,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "黑客工具和可疑程序列表",
+            "level": 0,
+            "name": "黑客工具(windows)"
+        },
+        "rules": {
+            "command": {
+                "data": "f\\-scrack\\.py|rtcp\\.py|s5\\.py|wmiexec\\.vbs",
+                "type": "regex"
+            },
+            "name": {
+                "data": "^(nc\\.exe|sl\\.exe|hd\\.exe|s\\.exe|portmap\\.exe|putty\\.exe|s5\\.exe|sock5\\.exe|iisputscan\\.exe|htran\\.exe|hfs\\.exe|rsh\\.exe|netty\\.exe|rexec\\.exe|icenw\\.exe|netsh\\.exe|chopper\\.exe|srvinfo\\.exe|naruto-domain\\.exe|rcsocket\\.exe|mt\\.exe|hatchet\\.exe|session\\.exe|cain\\.exe|socksproxy\\.exe|psexec\\.exe|rssocks\\.exe|hydra\\.exe|netcat\\.exe|lcx\\.exe|tunnel\\.exe|nmap\\.exe|attrib\\.exe|mshta\\.exe|regasm\\.exe|ieexec\\.exe)$",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "linux黑客工具列表",
+            "level": 0,
+            "name": "黑客工具(linux)"
+        },
+        "rules": {
+            "command": {
+                "data": "f-scrack\\.py|rtcp\\.py|s5\\.py|tunnel|lcx|crack|netcat|hydra|xosver|ssock|rssocks|psexec|socks|regeorg|^nmap|rootkit",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "linux"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "Guest用户正常情况为禁止状态",
+            "level": 0,
+            "name": "Guest用户异常"
+        },
+        "rules": {
+            "name": {
+                "data": "Guest",
+                "type": "string"
+            },
+            "status": {
+                "data": "OK",
+                "type": "string"
+            }
+        },
+        "source": "userlist",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "所有服务器从未连接过的IP",
+            "level": 1,
+            "name": "首次出口连接"
+        },
+        "rules": {
+            "remote": {
+                "data": "1",
+                "type": "count"
+            }
+        },
+        "source": "connection",
+        "system": "all"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "企业网络中首次出现的用户",
+            "level": 1,
+            "name": "可疑用户"
+        },
+        "rules": {
+            "name": {
+                "data": "1",
+                "type": "count"
+            }
+        },
+        "source": "userlist",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "带有$符号的隐藏用户,很大可能为黑客设置的隐藏后门账户",
+            "level": 0,
+            "name": "隐藏用户"
+        },
+        "rules": {
+            "name": {
+                "data": "\\$",
+                "type": "regex"
+            }
+        },
+        "source": "userlist",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "企业网络中首次出现的linux可登陆用户",
+            "level": 1,
+            "name": "可疑用户"
+        },
+        "rules": {
+            "description": {
+                "data": "\\/bin\\/bash|\\/bin\\/sh",
+                "type": "regex"
+            },
+            "name": {
+                "data": "1",
+                "type": "count"
+            }
+        },
+        "source": "userlist",
+        "system": "linux"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "非运维常用登陆IP",
+            "level": 1,
+            "name": "可疑登陆"
+        },
+        "rules": {
+            "remote": {
+                "data": "1",
+                "type": "count"
+            },
+            "status": {
+                "data": "true",
+                "type": "string"
+            }
+        },
+        "source": "loginlog",
+        "system": "all"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "整个内网首次出现的自启动服务",
+            "level": 1,
+            "name": "可疑服务"
+        },
+        "rules": {
+            "name": {
+                "data": "1",
+                "type": "count"
+            },
+            "startmode": {
+                "data": "Auto",
+                "type": "string"
+            }
+        },
+        "source": "service",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "企业网络中首次出现的计划任务",
+            "level": 1,
+            "name": "可疑计划任务"
+        },
+        "rules": {
+            "command": {
+                "data": "1",
+                "type": "count"
+            }
+        },
+        "source": "crontab",
+        "system": "all"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "系统文件被篡改，可能为攻击者留下的后门。",
+            "level": 0,
+            "name": "系统文件异常变化"
+        },
+        "rules": {
+            "action": {
+                "data": "WRITE",
+                "type": "string"
+            },
+            "path": {
+                "data": "cmd\\.exe|magnify\\.exe|sethc\\.exe|osk\\.exe|narrator\\.exe|displayswitch\\.exe|powershell\\.exe|explorer\\.exe|\\/bin\\/ps|\\/bin\\/netstat|\\/bin\\/last|\\/sbin\\/ss|\\/etc\\/pam.d\\/",
+                "type": "regex"
+            }
+        },
+        "source": "file",
+        "system": "all"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "可能为攻击者上传的webshell",
+            "level": 0,
+            "name": "可疑动态脚本写入"
+        },
+        "rules": {
+            "action": {
+                "data": "WRITE",
+                "type": "string"
+            },
+            "path": {
+                "data": "\\.(asp|asa|cer|cdx|htr|hdx|aspq|rem|rules|soap|svc|vbhtm[l]?|xamlx|xoml|asmx|ashx|asax|aspx|ascx|cshtm[l]?|cs|jsp|jspx|jspf|php[1-5]?)([\\.]+)?$",
+                "type": "regex"
+            },
+            "user": {
+                "data": "administrators",
+                "type": "non-regex"
+            }
+        },
+        "source": "file",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "利用web server的解析漏洞或者系统特性的异常文件",
+            "level": 0,
+            "name": "异常文件写入"
+        },
+        "rules": {
+            "action": {
+                "data": "WRITE",
+                "type": "string"
+            },
+            "path": {
+                "data": "\\.php[1-5]?\\.[a-z1-9]|\\/(con|aux|prn|nul|com[1-9]|lpt[1-9])\\.",
+                "type": "regex"
+            }
+        },
+        "source": "file",
+        "system": "all"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "linux可疑命令",
+            "level": 1,
+            "name": "可疑命令"
+        },
+        "rules": {
+            "command": {
+                "data": "insmod|hacker|\\/dev\\/tcp\\/|\\/dev\\/udp|history \\-c|vi.*?history|touch \\-d",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "linux"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "尝试关闭agent，可能为攻击者所为。",
+            "level": 1,
+            "name": "关闭安全agent"
+        },
+        "rules": {
+            "command": {
+                "data": "systemctl stop yulong-hids|net stop yulong-hids",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "all"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "模仿系统文件名，伪装为系统进程，可能为恶意程序。",
+            "level": 0,
+            "name": "伪装系统进程(svchost.exe)"
+        },
+        "rules": {
+            "command": {
+                "data": "^\\\"?c:\\\\{1,2}windows\\\\{1,2}system32\\\\{1,2}svchost\\.exe\\\"?",
+                "type": "non-regex"
+            },
+            "name": {
+                "data": "svchost.exe",
+                "type": "string"
+            }
+        },
+        "source": "process",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "不平常的调用方式，很大几率为攻击者所为",
+            "level": 1,
+            "name": "可疑命令调用行为"
+        },
+        "rules": {
+            "command": {
+                "data": "^(bitsadmin \\/transfer|powershell \\-exec bypass|powershell.*?webclient|rundll32|regsvr32.*?\\/i\\:|certutil.*?\\-f|cscript.*?pubprn\\.vbs)",
+                "type": "regex"
+            },
+            "parentname": {
+                "data": "^(cmd\\.exe|powershell\\.exe)$",
+                "type": "regexp"
+            }
+        },
+        "source": "process",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "数据库进程执行命令，很大几率为攻击者所为。",
+            "level": 0,
+            "name": "数据库执行命令"
+        },
+        "rules": {
+            "name": {
+                "data": "cmd.exe",
+                "type": "string"
+            },
+            "parentname": {
+                "data": "^(sqlservr\\.exe|mysqld.exe)$",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "windows"
+    },
+    {
+        "and": false,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "用于导出系统密码的黑客工具，需立刻处理。",
+            "level": 0,
+            "name": "HashDump黑客工具"
+        },
+        "rules": {
+            "command": {
+                "data": "vssown\\.vbs",
+                "type": "regex"
+            },
+            "name": {
+                "data": "^(mimikatz\\.exe|quarkspwdump\\.exe|prodump\\.exe|creddump\\.exe|pwdump7\\.exe|wce\\.exe|gethashes\\.exe|gsecdump\\.exe|ntdsutil\\.exe)$",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "windows"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "web进程执行了系统命令，可能为命令执行漏洞或者webshell行为",
+            "level": 0,
+            "name": "WebServer可疑进程启动(linux)"
+        },
+        "rules": {
+            "name": {
+                "data": "\\/bin\\/",
+                "type": "regex"
+            },
+            "parentname": {
+                "data": "^(apache[2]?|nginx|php)$",
+                "type": "regex"
+            }
+        },
+        "source": "process",
+        "system": "linux"
+    },
+    {
+        "and": true,
+        "enabled": true,
+        "meta": {
+            "author": "wolf",
+            "description": "web中间件执行了系统命令，可能为命令执行漏洞或者webshell行为",
+            "level": 0,
+            "name": "Web中间件可疑进程启动(linux)"
+        },
+        "rules": {
+            "info": {
+                "data": "tomcat|weblogic",
+                "type": "regex"
+            },
+            "parentname": {
+                "data": "java",
+                "type": "string"
+            }
+        },
+        "source": "process",
+        "system": "linux"
+    }
+]
