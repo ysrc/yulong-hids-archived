@@ -7,8 +7,8 @@ Windows版本只需编译为32位，代码已做了兼容，可在64位系统中
 
 ## 依赖
 
-Go依赖包都集成在相应工程的vendor目录中
-编译Agent需要先安装libpcap-devel
+- Go依赖包都集成在相应工程的vendor目录中
+- 编译Agent需要先安装libpcap-devel
 
 **ps. Windows 下编译 Agent 需要 [winpcap](https://www.winpcap.org/install/default.htm) 支持。且受到 [google/gopacket](https://github.com/google/gopacket) 影响可能会出现一些问题，具体请看 [Q&A#Q1](../qa.md#Q1)**
 
