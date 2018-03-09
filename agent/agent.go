@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"yulong-hids/agent/client"
@@ -8,6 +9,8 @@ import (
 
 func main() {
 	if len(os.Args) <= 1 {
+		fmt.Println(`Usage: agent[.exe] ServerIP [debug]`)
+		fmt.Println(`Example: agent 8.8.8.8 debug`)
 		return
 	}
 	var agent client.Agent
