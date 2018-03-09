@@ -50,7 +50,7 @@ var httpClient = &http.Client{
 func (a *Agent) init() {
 	a.ServerList, err = a.getServerList()
 	a.ctx = context.WithValue(context.Background(), share.ReqMetaDataKey, make(map[string]string))
-	a.log(a.ServerList)
+	a.log(`Available server node:`, a.ServerList)
 	if err != nil {
 		panic(1)
 	}
@@ -259,6 +259,6 @@ func (a Agent) mapComparison(new []map[string]string, old []map[string]string) b
 
 func (a Agent) log(info ...interface{}) {
 	if a.IsDebug {
-		log.Println(info)
+		log.Println(info...)
 	}
 }
