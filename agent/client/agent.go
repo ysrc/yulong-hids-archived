@@ -49,32 +49,41 @@ var httpClient = &http.Client{
 
 func (a *Agent) init() {
 	a.ServerList, err = a.getServerList()
-	a.ctx = context.WithValue(context.Background(), share.ReqMetaDataKey, make(map[string]string))
-	a.log(`Available server node:`, a.ServerList)
 	if err != nil {
+		a.log("GetServerList error:", err)
 		panic(1)
 	}
+	a.ctx = context.WithValue(context.Background(), share.ReqMetaDataKey, make(map[string]string))
+	a.log("Available server node:", a.ServerList)
 	if len(a.ServerList) == 0 {
 		time.Sleep(time.Second * 30)
+		a.log("No server node available")
 		panic(1)
 	}
 	a.newClient()
 	if common.LocalIP == "" {
+		a.log("Can not get local address")
 		panic(1)
 	}
 	a.Mutex = new(sync.Mutex)
 	err := a.Client.Call(a.ctx, "GetInfo", &common.ServerInfo, &common.Config)
 	if err != nil {
-		a.log(err.Error())
+		a.log("RPC Client Call Error:", err.Error())
 		panic(1)
 	}
-	a.log(common.Config)
+	a.log("Common Client Config:", common.Config)
 }
 
 // Run 启动agent
 func (a *Agent) Run() {
+
+	// agent 初始化
+	// 请求Web API，获取Server地址，初始化RPC客户端，获取客户端IP等
 	a.init()
+
+	// 每隔一段时间更新初始化配置
 	a.configRefresh()
+	
 	a.monitor()
 	a.getInfo()
 }
@@ -88,7 +97,7 @@ func (a *Agent) newClient() {
 		if common.LocalIP == "" {
 			a.setLocalIP(server)
 			common.ServerInfo = collect.GetComInfo()
-			a.log(common.ServerInfo)
+			a.log("Host Information:", common.ServerInfo)
 		}
 	}
 	conf := &tls.Config{
@@ -109,6 +118,7 @@ func (a Agent) getServerList() ([]string, error) {
 	} else {
 		url = "https://" + a.ServerNetLoc + SERVER_API
 	}
+	a.log("Web API:", url)
 	request, _ := http.NewRequest("GET", url, nil)
 	request.Close = true
 	resp, err := httpClient.Do(request)
@@ -130,6 +140,8 @@ func (a Agent) getServerList() ([]string, error) {
 func (a Agent) setLocalIP(ip string) {
 	conn, err := net.Dial("tcp", ip)
 	if err != nil {
+		a.log("Net.Dial:", ip)
+		a.log("Error:", err)
 		panic(1)
 	}
 	defer conn.Close()
@@ -143,7 +155,7 @@ func (a *Agent) configRefresh() {
 			go func() {
 				err = a.Client.Call(a.ctx, "GetInfo", &common.ServerInfo, &common.Config)
 				if err != nil {
-					a.log(err.Error())
+					a.log("RPC Client Call:", err.Error())
 					return
 				}
 				ch <- true
@@ -152,12 +164,17 @@ func (a *Agent) configRefresh() {
 			select {
 			case <-ch:
 				serverList, err := a.getServerList()
-				if err != nil || len(serverList) == 0 {
-					a.log(err.Error())
+				if err != nil {
+					a.log("RPC Client Call:", err.Error())
+					break
+				}
+				if len(serverList) == 0 {
+					a.log("No server node available")
 					break
 				}
 				if len(serverList) == len(a.ServerList) {
 					for i, server := range serverList {
+						// TODO 可能会产生问题
 						if server != a.ServerList[i] {
 							a.ServerList = serverList
 							// 防止正在传输重置client导致数据丢失
@@ -169,7 +186,7 @@ func (a *Agent) configRefresh() {
 						}
 					}
 				} else {
-					a.log(serverList, a.ServerList)
+					a.log("Server nodes from old to new:", a.ServerList, "->", serverList)
 					a.ServerList = serverList
 					a.Mutex.Lock()
 					a.Client.Close()
