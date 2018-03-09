@@ -19,6 +19,7 @@
 * [使用帮助](./docs/help.md)
 * [规则编写](./docs/rule.md)
 * [编译指南](./docs/build.md)
+* [Q&A](./qa.md)
 
 ## 功能特点
 
