@@ -84,7 +84,11 @@ func (a *Agent) Run() {
 	// 每隔一段时间更新初始化配置
 	a.configRefresh()
 	
+	// 开启各个监控流程 文件监控，网络监控，进程监控
 	a.monitor()
+	
+	// 每隔一段时间获取系统信息
+	// 监听端口，服务信息，用户信息，开机启动项，计划任务，登录信息，进程列表等
 	a.getInfo()
 }
 
@@ -211,7 +215,7 @@ func (a *Agent) monitor() {
 		for {
 			data = <-result
 			data["time"] = fmt.Sprintf("%d", time.Now().Unix())
-			a.log(data)
+			a.log("Monitor data: ", data)
 			source := data["source"]
 			delete(data, "source")
 			a.Mutex.Lock()
@@ -233,7 +237,7 @@ func (a *Agent) getInfo() {
 		allData := collect.GetAllInfo()
 		for k, v := range allData {
 			if len(v) == 0 || a.mapComparison(v, historyCache[k]) {
-				a.log(k, "No change")
+				a.log("GetInfo Data:", k, "No change")
 				continue
 			} else {
 				a.Mutex.Lock()
@@ -241,7 +245,7 @@ func (a *Agent) getInfo() {
 				a.put()
 				a.Mutex.Unlock()
 				if k != "service" {
-					a.log(a.PutData)
+					a.log("Data details:", k, a.PutData)
 				}
 				historyCache[k] = v
 			}
@@ -256,7 +260,7 @@ func (a *Agent) getInfo() {
 func (a Agent) put() {
 	_, err := a.Client.Go(a.ctx, "PutInfo", &a.PutData, &a.Reply, nil)
 	if err != nil {
-		a.log("PutInfo", err.Error())
+		a.log("PutInfo error:", err.Error())
 	}
 }
 
