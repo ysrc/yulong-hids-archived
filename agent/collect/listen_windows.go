@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"strings"
@@ -135,7 +136,7 @@ func getListeningOther() (resultData []map[string]string) {
 // GetListening 获取tcp端口监听端口
 func GetListening() (resultData []map[string]string) {
 	if _, err := os.Stat(os.Getenv("SystemDrive") + `/Users`); err != nil {
-		fmt.Println("2003")
+		log.Println("Get listening for Windows 2003")
 		resultData = getListening2003()
 	} else {
 		resultData = getListeningOther()
