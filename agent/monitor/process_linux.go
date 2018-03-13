@@ -147,7 +147,7 @@ func StartProcessMonitor(resultChan chan map[string]string) {
 		if len(proList) == 6 {
 			resultdata["info"] = proList[5]
 		}
-		fmt.Println(resultdata)
+		// fmt.Println(resultdata)
 		resultChan <- resultdata
 		//fmt.Print(string(buf[0:n]))
 	}

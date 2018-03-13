@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"time"
-
+	"log"
 	"github.com/StackExchange/wmi"
 )
 
@@ -31,7 +31,7 @@ func GetProcessList() (resultData []map[string]string) {
 		var dst []process2003
 		err := wmi.Query("SELECT * FROM Win32_Process", &dst)
 		if err != nil {
-			fmt.Println(err)
+			log.Println("Windows2003 get process info wmi Query error:", err)
 			return
 		}
 		if len(dst) != 0 {
@@ -49,7 +49,7 @@ func GetProcessList() (resultData []map[string]string) {
 		var dst []process
 		err := wmi.Query("SELECT * FROM Win32_Process", &dst)
 		if err != nil {
-			fmt.Println(err)
+			log.Println("Windows get process info wmi Query error:",err)
 			return
 		}
 		if len(dst) != 0 {

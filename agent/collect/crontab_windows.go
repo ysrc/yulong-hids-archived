@@ -4,7 +4,7 @@ package collect
 
 import (
 	"encoding/xml"
-	"fmt"
+	"log"
 	"io/ioutil"
 	"runtime"
 	"strings"
@@ -60,7 +60,7 @@ func GetCrontab() (resultData []map[string]string) {
 		data := dec.ConvertString(string(dat))
 		err = xml.Unmarshal([]byte(strings.Replace(data, "UTF-16", "UTF-8", 1)), &v)
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Println("Windows crontab info xml Unmarshal error: ", err.Error())
 			continue
 		}
 		m := make(map[string]string)
