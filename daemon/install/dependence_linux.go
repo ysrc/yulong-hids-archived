@@ -44,15 +44,15 @@ func Dependency(ip string, installPath string, arch string) error {
 			}
 			io.CopyN(desfile, f, int64(_file.UncompressedSize64))
 			desfile.Close()
-			log.Println("syshook_" + ver)
+			log.Println("Use syshook_" + ver)
 			out, err = common.CmdExec(fmt.Sprintf("insmod %s/syshook_execve.ko", installPath))
 			if err != nil {
 				return err
 			}
 			if !strings.Contains(out, "ERROR") {
-				log.Println("insmod syshook_execve succeeded")
+				log.Println("Insmod syshook_execve succeeded")
 			} else {
-				log.Println(out)
+				log.Println("Insmod syshook_execve error, command output:", out)
 			}
 		}
 	}

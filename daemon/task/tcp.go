@@ -32,7 +32,7 @@ func (t *taskServer) run() {
 	for {
 		tcpConn, err := t.TCPListener.Accept()
 		if err != nil {
-			fmt.Println(err.Error())
+			fmt.Println("Accept new TCP listener error:", err.Error())
 			continue
 		}
 		t.ServerIP = strings.SplitN(tcpConn.RemoteAddr().String(), ":", 2)[0]
@@ -76,13 +76,13 @@ func (t *taskServer) tcpPipe(conn net.Conn) {
 	decodeBytes, _ := base64.RawStdEncoding.DecodeString(string(message))
 	decryptdata, err := rsaDecrypt(decodeBytes)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Decrypt rsa text in tcpPipe error:", err.Error())
 		return
 	}
 	var taskData map[string]string
 	err = json.Unmarshal(decryptdata, &taskData)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Unmarshal json text in tcpPipe error", err.Error())
 		return
 	}
 	var taskType string

@@ -19,7 +19,7 @@ func UnInstallALL() {
 	}
 	common.KillAgent()
 	if err := common.Service.Uninstall(); err != nil {
-		log.Println(err.Error())
+		log.Println("Uninstall yulong-hids error:", err.Error())
 	}
 	log.Println("Uninstall completed")
 	os.Exit(1)

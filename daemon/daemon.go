@@ -49,7 +49,7 @@ func (p *program) run() {
 			err = common.Cmd.Wait()
 			if err != nil {
 				common.AgentStatus = false
-				log.Println("agent to exit：", err.Error())
+				log.Println("Agent to exit：", err.Error())
 			}
 		} else {
 			log.Println("Startup Agent failed", err.Error())
@@ -79,7 +79,7 @@ func main() {
 	var err error
 	common.Service, err = service.New(prg, svcConfig)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("New a service error:", err.Error())
 		return
 	}
 	if *uninstallBool {

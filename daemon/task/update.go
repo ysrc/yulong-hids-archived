@@ -28,7 +28,7 @@ func agentUpdate(ip string, installPath string, arch string) (bool, error) {
 		file.Close()
 		agentMd5 := md5h.Sum([]byte(""))
 		checkURL := fmt.Sprintf("%s://%s/json/download?hash=%x&system=%s&platform=%s&action=check&type=agent", common.Proto, ip, agentMd5, runtime.GOOS, arch)
-		log.Println(checkURL)
+		log.Println("Start to get url: ", checkURL)
 		res, err := common.HTTPClient.Get(checkURL)
 		if err != nil {
 			return false, err

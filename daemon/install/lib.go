@@ -31,7 +31,7 @@ func downFile(url string, svaepath string) error {
 		fileInfo, err := os.Stat(svaepath)
 		// log.Println(res.ContentLength, fileInfo.Size())
 		if err != nil || fileInfo.Size() != res.ContentLength {
-			log.Println(err.Error())
+			log.Println("File download error:", err.Error())
 			return errors.New("downfile error")
 		}
 	} else {

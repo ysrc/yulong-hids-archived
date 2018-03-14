@@ -17,13 +17,13 @@ func setPublicKey() {
 	url := common.Proto + "://" + common.ServerIP + common.PUBLICKEY_API
 	resp, err := common.HTTPClient.Get(url)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("HTTP get publickey error:", err.Error())
 		return
 	}
 	defer resp.Body.Close()
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Update publickey ioutil.ReadAll error", err.Error())
 		return
 	}
 	json.Unmarshal([]byte(result), &res)
