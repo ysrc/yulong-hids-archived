@@ -98,7 +98,7 @@ func main() {
 			os.Mkdir(common.InstallPath, 0)
 			err = install.Dependency(common.ServerIP, common.InstallPath, common.Arch)
 			if err != nil {
-				log.Println(err.Error())
+				log.Println("Install dependency, service error", err.Error())
 			}
 		}
 		if common.ServerIP == "" {
@@ -107,19 +107,19 @@ func main() {
 		}
 		err := install.Agent(common.ServerIP, common.InstallPath, common.Arch)
 		if err != nil {
-			log.Println(err.Error())
+			log.Println("Install agent error", err.Error())
 		}
-		log.Println("Installed")
+		log.Println("Installed!")
 		return
 	}
 	// 安装daemon为服务
 	if *registeredBool {
 		err = common.Service.Install()
 		if err != nil {
-			log.Println(err.Error())
+			log.Println("Install daemon as service error:", err.Error())
 		} else {
 			if err = common.Service.Start(); err != nil {
-				log.Println(err.Error())
+				log.Println("Service start error:", err.Error())
 			} else {
 				log.Println("Install as a service", "ok")
 			}
@@ -128,6 +128,6 @@ func main() {
 	}
 	err = common.Service.Run()
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Service run error:", err.Error())
 	}
 }
