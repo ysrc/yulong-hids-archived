@@ -70,6 +70,8 @@ func init() {
 	go safecheck.ScanMonitorThread()
 	// 启动客户端健康检测线程
 	go safecheck.HealthCheckThread()
+	// ES异步写入线程
+	go models.InsertThread()
 }
 func main() {
 	cert, err := tls.LoadX509KeyPair("cert.pem", "private.pem")
