@@ -238,7 +238,7 @@ func InsertThread() {
 			Type(data.dataType).
 			BodyJson(data.data).
 			Do(context.Background())
-		if err == nil {
+		if err != nil {
 			log.Println("insert es error")
 		}
 	}
