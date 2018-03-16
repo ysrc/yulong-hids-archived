@@ -34,6 +34,7 @@ func Agent(ip string, installPath string, arch string) error {
 	out, err = common.CmdExec(cmd)
 	if err == nil && strings.Contains(out, "yulong-hids") {
 		log.Println("Start service successfully")
+		return nil
 	}
-	return nil
+	return err
 }
