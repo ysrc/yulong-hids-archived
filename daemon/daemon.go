@@ -98,7 +98,8 @@ func main() {
 			os.Mkdir(common.InstallPath, 0)
 			err = install.Dependency(common.ServerIP, common.InstallPath, common.Arch)
 			if err != nil {
-				log.Println("Install dependency, service error", err.Error())
+				log.Println("Install dependency, service error:", err.Error())
+				return
 			}
 		}
 		if common.ServerIP == "" {
@@ -107,7 +108,8 @@ func main() {
 		}
 		err := install.Agent(common.ServerIP, common.InstallPath, common.Arch)
 		if err != nil {
-			log.Println("Install agent error", err.Error())
+			log.Println("Install agent error:", err.Error())
+			return
 		}
 		log.Println("Installed!")
 		return
