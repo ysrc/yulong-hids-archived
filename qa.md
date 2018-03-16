@@ -11,3 +11,9 @@
 1. 没有安装 libpcap 或者 winpcap 依赖
 2. 由于 [gopacket的代码](https://github.com/google/gopacket/blob/master/pcap/pcap.go#L17) 写死了WpdPack/Include 包的位置，所以安装 winpcap 时不能修改该位置，请卸载并重新安装 libpcap/winpcap 到默认位置。
 3. 部分 Windows 系统的安装后的默认位置并非 C:/WpdPack/Include, 下载 [WinPcap Developer's Pack](https://www.winpcap.org/devel.htm)， 并解压到C盘根目录，保证有该文件路径及路径下的依赖文件即可。
+
+## Q2
+
+**Question:** 运行web程序报: "panic: prefix should has path" 错误。
+
+**Answer:** 这个错误来自 beego, 当beego找不到配置文件的时候会产生该错误， 配置路径为在 'web/conf/app.conf', 该路径下必须存在配置文件。 配置文件样本及示例可参见: [web/conf/app-config-sample.conf](https://github.com/ysrc/yulong-hids/blob/master/web/conf/app-config-sample.conf)。
