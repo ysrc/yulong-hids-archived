@@ -84,7 +84,6 @@ int CapturePrecess()
 */
 import "C"
 import (
-	"fmt"
 	"log"
 	"net"
 	"os"
