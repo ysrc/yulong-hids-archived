@@ -23,6 +23,8 @@ import datetime
 import subprocess
 import shlex
 import shutil
+import struct
+import zipfile
 
 base_path = ''
 base_command = 'go build -o {out} --ldflags="-w -s" {source}'
@@ -43,17 +45,37 @@ def make_execute_name(name_base):
     if is_win():
         return '{}.{}'.format(name_base, "exe")
     else:
+        if name_base is 'web':
+            name_base = os.path.join('web', name_base)
         return name_base
 
 
 def mk_build_dir():
     dir_name = 'build_{date:%Y%m%d_%H%M%S}'.format(date=datetime.datetime.now())
     path = os.path.join(base_path, 'bin', dir_name)
-    os.mkdir(dir_name, mode=755) # rwx
+    print('[*] mkdir {}'.format(path))
+    os.mkdir(path, mode=0o755) # rwx
     return path
 
 
+def start_package_name():
+    base_pkg_name = '{}-{}'
+    if is_win():
+        platform = 'win'
+    else:
+        platform = 'linux'
+    arch = 8 * struct.calcsize("P")
+    return base_pkg_name.format(platform, arch)
+
+
 def build(build_path):
+    # 复制web文件目录到编译目录下
+    web_path = os.path.join(build_path, 'web')
+    os.mkdir(web_path, mode=0o755)
+    for dir_name in web_dir_lst:
+        dir_src = os.path.join(base_path, 'web', dir_name)
+        dir_dst = os.path.join(web_path, dir_name)
+        shutil.copytree(dir_src, dir_dst, symlinks=False)
     # 编译各个由go(或cgo)所编写的程序
     for type_ in main_function_lst:
         go_source = main_function_lst[type_]
@@ -71,22 +93,26 @@ def build(build_path):
     rule_src = os.path.join(base_path, 'default_rules.json')
     rule_dst = os.path.join(build_path, 'rules.json')
     shutil.copyfile(rule_src, rule_dst, follow_symlinks=False)
-    # 复制web文件目录到编译目录下
-    web_path = os.path.join(build_path, 'web')
-    os.mkdir(web_path, mode=755)
-    for dir_name in web_dir_lst:
-        dir_src = os.path.join(base_path, 'web', dir_name)
-        dir_dst = os.path.join(web_path, dir_name)
-        shutil.copytree(dir_src, dir_dst, symlinks=False)
     # 'app-config-sample.conf' -> 'app.conf'
     shutil.move(
         os.path.join(web_path, 'conf', 'app-config-sample.conf'),
         os.path.join(web_path, 'conf', 'app.conf')
     )
-    shutil.copyfile(
-        os.path.join(build, make_execute_name('web')),
-        os.path.join(web_path, make_execute_name('web')),
-        follow_symlinks=False
+    # 生成web的压缩包
+    web_zip_path = os.path.join(build_path, 'web.zip')
+    with zipfile.ZipFile(web_zip_path, 'w') as myzip:
+        myzip.write(web_path)
+    # 生成当前系统的上传包
+    pkg_name = os.path.join(build_path, '{}.zip'.format(start_package_name()))
+    with zipfile.ZipFile(pkg_name, 'w') as myzip:
+        myzip.write(os.path.join(base_path, make_execute_name('agent')))
+        myzip.write(os.path.join(base_path, make_execute_name('daemon')))
+        myzip.write(os.path.join(base_path, 'bin', start_package_name(), 'data.zip'))
+    # 生成文档的压缩包
+    doc_zip_path = os.path.join(build_path, 'doc.zip')
+    with zipfile.ZipFile(doc_zip_path, 'w') as myzip:
+        myzip.write(
+            os.path.join(base_path, 'docs')
     )
 
 
@@ -103,3 +129,4 @@ def check_gopath():
 if __name__ == '__main__':
     base_path = project_path()
     build_path = mk_build_dir()
+    build(build_path)
