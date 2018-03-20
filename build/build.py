@@ -42,11 +42,11 @@ def is_win():
 
 
 def make_execute_name(name_base):
+    if name_base is 'web':
+            name_base = os.path.join('web', name_base)
     if is_win():
         return '{}.{}'.format(name_base, "exe")
     else:
-        if name_base is 'web':
-            name_base = os.path.join('web', name_base)
         return name_base
 
 
@@ -79,7 +79,12 @@ def build(build_path):
     # 编译各个由go(或cgo)所编写的程序
     for type_ in main_function_lst:
         go_source = main_function_lst[type_]
-        exe_path = os.path.join(build_path, make_execute_name(type_))
+        if is_win():
+            exe_path = os.path.join(build_path, make_execute_name(type_))
+            exe_path = exe_path.replace('\\', '\\\\')
+            go_source = go_source.replace('/', '\\\\')
+        else:
+            exe_path = os.path.join(build_path, make_execute_name(type_))
         command = base_command.format(out=exe_path, source=go_source)
         print('[*] run command:', command)
         command_args = shlex.split(command)
@@ -99,21 +104,19 @@ def build(build_path):
         os.path.join(web_path, 'conf', 'app.conf')
     )
     # 生成web的压缩包
-    web_zip_path = os.path.join(build_path, 'web.zip')
-    with zipfile.ZipFile(web_zip_path, 'w') as myzip:
-        myzip.write(web_path)
+    web_zip_path = os.path.join(build_path, 'web')
+    shutil.make_archive(web_zip_path, 'zip', web_path)
     # 生成当前系统的上传包
     pkg_name = os.path.join(build_path, '{}.zip'.format(start_package_name()))
     with zipfile.ZipFile(pkg_name, 'w') as myzip:
-        myzip.write(os.path.join(base_path, make_execute_name('agent')))
-        myzip.write(os.path.join(base_path, make_execute_name('daemon')))
-        myzip.write(os.path.join(base_path, 'bin', start_package_name(), 'data.zip'))
+        _name = make_execute_name('agent')
+        myzip.write(os.path.join(build_path, _name), _name)
+        _name = make_execute_name('daemon')
+        myzip.write(os.path.join(build_path, _name), _name)
+        myzip.write(os.path.join(base_path, 'bin', start_package_name(), 'data.zip'), 'data.zip')
     # 生成文档的压缩包
-    doc_zip_path = os.path.join(build_path, 'doc.zip')
-    with zipfile.ZipFile(doc_zip_path, 'w') as myzip:
-        myzip.write(
-            os.path.join(base_path, 'docs')
-    )
+    doc_zip_path = os.path.join(build_path, 'doc')
+    shutil.make_archive(doc_zip_path, 'zip', os.path.join(base_path, 'docs'))
 
 
 def project_path():
