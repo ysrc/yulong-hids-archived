@@ -17,3 +17,9 @@
 **Question:** 运行web程序报: "panic: prefix should has path" 错误。
 
 **Answer:** 这个错误来自 beego, 当beego找不到配置文件的时候会产生该错误， 配置路径为在 'web/conf/app.conf', 该路径下必须存在配置文件。 配置文件样本及示例可参见: [web/conf/app-config-sample.conf](https://github.com/ysrc/yulong-hids/blob/master/web/conf/app-config-sample.conf)。
+
+## Q3
+
+**Question:** Web前端显示错误，查看log看到以下信息： Collections pipe(pipe.All) aggregate all exception: invalid operator '$dateToString'。
+
+**Answer:** 几乎所有的Web问题都可以通过看log解决，Web的log非常全，只要保证配置文件的 loglevel 为 6 以上，就可以看到很多日志信息。这个问题里的报错来自 Mongodb，当前的 Mongodb 不支持 $dateToString 操作符，请升级 Mongodb 到文档要求的版本。
