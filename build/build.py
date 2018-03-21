@@ -103,17 +103,27 @@ def build(build_path):
     with zipfile.ZipFile(web_zip_path, 'w') as myzip:
         myzip.write(web_path)
     # 生成当前系统的上传包
-    pkg_name = os.path.join(build_path, '{}.zip'.format(start_package_name()))
-    with zipfile.ZipFile(pkg_name, 'w') as myzip:
-        myzip.write(os.path.join(base_path, make_execute_name('agent')))
-        myzip.write(os.path.join(base_path, make_execute_name('daemon')))
-        myzip.write(os.path.join(base_path, 'bin', start_package_name(), 'data.zip'))
+    pkg_name = start_package_name()
+    mk_start_pkg(build_path, pkg_name)
+    if is_win():
+        pkg_name_ = 'win-64'
+        mk_start_pkg(build_path, pkg_name_)
     # 生成文档的压缩包
     doc_zip_path = os.path.join(build_path, 'doc.zip')
     with zipfile.ZipFile(doc_zip_path, 'w') as myzip:
         myzip.write(
             os.path.join(base_path, 'docs')
     )
+
+
+def mk_start_pkg(build_path, name_):
+    pkg_name = os.path.join(build_path, '{}.zip'.format(name_))
+    if not os.path.exists(pkg_name):
+        return
+    with zipfile.ZipFile(pkg_name, 'w') as myzip:
+        myzip.write(os.path.join(base_path, make_execute_name('agent')))
+        myzip.write(os.path.join(base_path, make_execute_name('daemon')))
+        myzip.write(os.path.join(base_path, 'bin', name_, 'data.zip'))
 
 
 def project_path():
