@@ -122,9 +122,9 @@ def mk_start_pkg(build_path, name_):
     if os.path.exists(pkg_name):
         return
     with zipfile.ZipFile(pkg_name, 'w') as myzip:
-        myzip.write(os.path.join(base_path, make_execute_name('agent')))
-        myzip.write(os.path.join(base_path, make_execute_name('daemon')))
-        myzip.write(os.path.join(base_path, 'bin', name_, 'data.zip'))
+        myzip.write(os.path.join(build_path, make_execute_name('agent')), make_execute_name('agent'))
+        myzip.write(os.path.join(build_path, make_execute_name('daemon')), make_execute_name('daemon'))
+        myzip.write(os.path.join(base_path, 'bin', name_, 'data.zip'), 'data.zip')
 
 
 def project_path():
