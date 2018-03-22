@@ -34,6 +34,8 @@
 /server/server.exe
 /server/server_*
 
+/bin/build_*
+
 experiments/
 .vscode/
 __pycache__

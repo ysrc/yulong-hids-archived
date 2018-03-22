@@ -119,7 +119,7 @@ def build(build_path):
 
 def mk_start_pkg(build_path, name_):
     pkg_name = os.path.join(build_path, '{}.zip'.format(name_))
-    if not os.path.exists(pkg_name):
+    if os.path.exists(pkg_name):
         return
     with zipfile.ZipFile(pkg_name, 'w') as myzip:
         myzip.write(os.path.join(base_path, make_execute_name('agent')))
