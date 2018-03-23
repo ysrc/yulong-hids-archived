@@ -2,8 +2,7 @@
 ----------
 ## 环境要求
 
-Golang环境安装可以[参照](https://github.com/astaxie/build-web-application-with-golang/blob/master/zh/01.1.md)，各系统会与下面的示例稍有不同，Golang版本不可以低于1.9。  
-Windows版本只需编译为32位，代码已做了兼容，可在64位系统中正常工作。
+Golang环境安装可以[参照](https://github.com/astaxie/build-web-application-with-golang/blob/master/zh/01.1.md)，各系统会与下面的示例稍有不同，Golang版本不可以低于1.9。
 
 ## 依赖
 
@@ -18,17 +17,15 @@ Windows版本只需编译为32位，代码已做了兼容，可在64位系统中
 ### 客户端（Agent，Daemon、依赖）
 ```
 下载安装对应安装包 https://golang.google.cn/dl/
-# windows 32/64
+# windows 32/64，32位版本须在32位版本win7下编译。Win版本agent代码做了兼容，如只编译32位亦可在64位系统中正常工作。
 cd C:\Go\src
 git clone https://github.com/ysrc/yulong-hids/
 
 // 编译agent
-go build -o yulong-hids\bin\win-32\agent.exe --ldflags="-w -s" yulong-hids\agent\agent.go
-copy yulong-hids\bin\win-32\agent.exe yulong-hids\bin\win-64\agent.exe
+go build -o yulong-hids\bin\win-64\agent.exe --ldflags="-w -s" yulong-hids\agent\agent.go
 
 // 编译daemon
-go build -o yulong-hids\bin\win-32\daemon.exe --ldflags="-w -s" yulong-hids\daemon\daemon.go
-copy yulong-hids\bin\win-32\daemon.exe yulong-hids\bin\win-64\daemon.exe
+go build -o yulong-hids\bin\win-64\daemon.exe --ldflags="-w -s" yulong-hids\daemon\daemon.go
 ```
 
 ```
@@ -68,7 +65,7 @@ go build -o yulong-hids/web/web --ldflags="-w -s" yulong-hids/web/main.go
 
 ### 内核、驱动
 
-win下的驭龙驱动文件pro.sys我们已经编译好了现成的，如果自行编译的话需要购买代码签名证书进行签名，否则无法正常加载。
+win下的驭龙驱动文件pro.sys我们已经编译好了现成的放在了data.zip中，如果自行编译的话需要购买代码签名证书进行签名，否则无法正常加载使用。
 
 下载地址：[wdk 7600](http://download.microsoft.com/download/4/A/2/4A25C7D5-EFBE-4182-B6A9-AE6850409A78/GRMWDK_EN_7600_1.ISO)
 
@@ -84,9 +81,10 @@ cd C:\Go\src\yulong-hids\driver\
 build
 
 // Linux内核
-我们在bin\linux-64\data.zip中已经提供了一些编译好的对应内核版本的ko文件。
+我们在bin\linux-64\data.zip中已经提供了一些编译好的对应内核版本的ko文件，直接用的话需要确认内核版本完全一致。
 实际部署过程中需要 uname -r 统计下需要部署的机器linux内核版本，然后需要找到完全匹配对应版本的kernel-devel包
-下下来并安装，yum安装的不一定完全匹配。
+下下来并安装，yum安装的不一定完全匹配。虽然软链接到不一致的版本也能编译出来ko并加载，但是不知道会不会有影响，
+稳妥起见还是参照上面的做法。
 rpm -ivh kernel-devel-3.10.0-327.el7.x86_64.rpm
 
 cd /usr/local/go/src/yulong-hids/syscall_hook
