@@ -37,5 +37,10 @@ func Agent(ip string, installPath string, arch string) error {
 		log.Println("Start service successfully")
 		return nil
 	}
+	// common.CmdExec 返回 err, 也可能执行成功
+	if strings.Contains(err.Error(), "exit status") {
+		return nil
+	}
+	log.Println("Exec error:", err)
 	return err
 }
