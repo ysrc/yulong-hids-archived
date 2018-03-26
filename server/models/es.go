@@ -214,12 +214,12 @@ func init() {
 	var err error
 	Client, err = elastic.NewClient(elastic.SetURL("http://" + *es))
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Elastic NewClient error:", err.Error())
 		panic(1)
 	}
 	indexNameList, err := Client.IndexNames()
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Client IndexNames error:", err.Error())
 		return
 	}
 	if !inArray(indexNameList, nowindicesName, false) {
@@ -239,7 +239,7 @@ func InsertThread() {
 			BodyJson(data.data).
 			Do(context.Background())
 		if err != nil {
-			log.Println("insert es error")
+			log.Println("insert es error: ", err)
 		}
 	}
 }
