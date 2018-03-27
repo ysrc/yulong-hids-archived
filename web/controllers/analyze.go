@@ -231,7 +231,7 @@ func searchParser(queryObj map[string]string) (bson.M, bson.M, string) {
 
 	dataFilter := bson.M{"$filter": bson.M{"input": "$data", "as": "d", "cond": bson.M{"$and": condAndQuery}}}
 	projectQuery["data"] = dataFilter
-	beego.Debug(matchQuery, projectQuery, dbstring)
+	beego.Debug("Show matchQuery, projectQuery, dbstring: ", matchQuery, projectQuery, dbstring)
 	return matchQuery, projectQuery, dbstring
 }
 

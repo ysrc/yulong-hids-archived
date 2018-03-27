@@ -81,7 +81,7 @@ func (bmodel *baseModel) Count(query bson.M) int {
 	if count, err = collections.Find(query).Count(); err != nil {
 		beego.Error("Model Count(collections.Find) Error", err, query)
 	}
-	beego.Debug(bmodel.collectionName, query, count)
+	beego.Debug("Show collectionName, query, count:", bmodel.collectionName, query, count)
 	return count
 }
 
@@ -128,7 +128,7 @@ func (bmodel *baseModel) InsertOne(data bson.M) bool {
 	collections := mConn.DB("").C(cname)
 	err := collections.Insert(data)
 	if err != nil {
-		beego.Error("mongodb insert(collections.Insert) error", err)
+		beego.Error("Mongodb insert(collections.Insert) error", err)
 		return false
 	}
 	return true

@@ -40,7 +40,7 @@ func (c *TaskController) Get() {
 func (c *TaskController) Post() {
 	var j = models.NewTask()
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &j); err != nil {
-		beego.Debug("Task:", err)
+		beego.Error("JSON Unmarshal error:", err)
 		c.Data["json"] = models.NewErrorInfo(settings.AddTaskFailure)
 		c.ServeJSON()
 		return

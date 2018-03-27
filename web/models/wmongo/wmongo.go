@@ -23,8 +23,8 @@ func init() {
 
 	sess, err := mgo.Dial(url)
 	if err != nil {
-		beego.Error("mongodb url:", url)
-		beego.Error("mongodb session connect", err)
+		beego.Error("Mongodb url:", url)
+		beego.Error("Mongodb session connect", err)
 	}
 
 	session = sess

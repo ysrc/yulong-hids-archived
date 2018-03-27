@@ -43,7 +43,7 @@ func WatchModeExempt(c *BaseController) bool {
 	// but my bro want to make it easy...
 
 	// checkit step by step is better then "&&" condition
-	beego.Debug(c.Ctx.Input.URL())
+	beego.Debug("Url: ", c.Ctx.Input.URL())
 	if !strings.HasSuffix(c.Ctx.Input.URL(), "config") {
 		return false
 	}

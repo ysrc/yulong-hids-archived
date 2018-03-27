@@ -51,7 +51,7 @@ func (c *RuleController) Post() {
 		json.Unmarshal(c.Ctx.Input.RequestBody, &postjson)
 		idstr := postjson["id"].(string)
 		status := postjson["enable"].(bool)
-		beego.Debug(idstr, status)
+		beego.Debug("Rule id and current status:", idstr, status)
 		err := ruleModel.UpdateByID(bson.ObjectIdHex(idstr), bson.M{"enabled": status})
 		if err != nil {
 			beego.Error("Rule change enable(model.UpdateByID):", err)

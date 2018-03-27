@@ -48,6 +48,5 @@ func (c *Statistics) AllValue(fieldname string, limitnum int) interface{} {
 
 // Query db.getCollection('statistics').GetSortedTop
 func (c *Statistics) Query(match bson.M, start int, limit int) []bson.M {
-	beego.Debug(match)
 	return c.GetSortedTop(match, start, limit)
 }

@@ -32,7 +32,7 @@ func FileUpload(system string, platform string, c *FileController) *models.CodeI
 	if !utils.StringInSlice(system, settings.SystemArray) ||
 		!utils.StringInSlice(platform, settings.PlatformArray) {
 		// check all param in white list
-		beego.Info("文件上传参数错误")
+		beego.Error("文件上传参数错误")
 		return ErrorReturn()
 	}
 
