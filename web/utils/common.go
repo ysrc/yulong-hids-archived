@@ -42,6 +42,7 @@ func Md5String(str string) string {
 func GetFileMD5Hash(filepath string) string {
 	file, err := os.Open(filepath)
 	if err != nil {
+		beego.Error("Open file error:", err)
 		return ""
 	}
 	defer file.Close()
