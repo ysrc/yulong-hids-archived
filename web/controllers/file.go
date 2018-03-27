@@ -32,42 +32,36 @@ func FileUpload(system string, platform string, c *FileController) *models.CodeI
 	if !utils.StringInSlice(system, settings.SystemArray) ||
 		!utils.StringInSlice(platform, settings.PlatformArray) {
 		// check all param in white list
-		beego.Info("文件上传参数错误")
+		beego.Error("文件上传参数错误")
 		return ErrorReturn()
 	}
-
-	file, _, _ := c.GetFile("file")
 
 	// maybe web should add a fix to filename with random string
 	// but we delete this feature, it is not suitable for this
 	filename := fmt.Sprintf("%s-%s-%s", system, platform, "agent")
 	filename = path.Join(settings.FilePath, filename)
 
-	if file != nil {
-		err := c.SaveToFile("file", filename)
-		if err != nil {
-			beego.Info("SaveToFile Error:", err)
-			return ErrorReturn()
-		}
-		md5 := utils.GetFileMD5Hash(filename)
-		if md5 == "" {
-			beego.Info("MD5 Error!!!")
-			return ErrorReturn()
-		}
-		filemodel := &models.File{
-			Platform: platform,
-			System:   system,
-			Hash:     md5,
-			Type:     "agent",
-		}
-		if res := filemodel.Update(); !res {
-			beego.Info("Filemodel Update Error!!!")
-			return ErrorReturn()
-		}
-		return models.NewNormalInfo(settings.Succeed)
+	err := c.SaveToFile("file", filename)
+	if err != nil {
+		beego.Error("SaveToFile Error:", err)
+		return ErrorReturn()
 	}
-	beego.Info("Get HTTP File Form Error!!!")
-	return ErrorReturn()
+	md5 := utils.GetFileMD5Hash(filename)
+	if md5 == "" {
+		beego.Error("GetFileMD5Hash null error.")
+		return ErrorReturn()
+	}
+	filemodel := &models.File{
+		Platform: platform,
+		System:   system,
+		Hash:     md5,
+		Type:     "agent",
+	}
+	if res := filemodel.Update(); !res {
+		beego.Error("Filemodel Update Error!!!")
+		return ErrorReturn()
+	}
+	return models.NewNormalInfo(settings.Succeed)
 }
 
 // ErrorReturn return the error struct

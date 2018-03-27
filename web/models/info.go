@@ -67,7 +67,7 @@ func (c *Info) Aggregate(querylist ...bson.M) []bson.M {
 	collections := mConn.DB("").C("info")
 
 	j, _ := json.Marshal(querylist)
-	beego.Debug(string(j))
+	beego.Debug("Debug aggregate query:", string(j))
 
 	pipe := collections.Pipe(querylist)
 	err := pipe.All(&res)

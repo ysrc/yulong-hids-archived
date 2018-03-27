@@ -156,6 +156,9 @@ func (app *App) Run() {
 			}
 		}()
 	}
+
+	time.Sleep(1000 * time.Microsecond)
+
 	if BConfig.Listen.EnableHTTP {
 		go func() {
 			app.Server.Addr = addr

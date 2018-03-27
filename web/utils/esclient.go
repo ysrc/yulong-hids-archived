@@ -46,6 +46,7 @@ func (es ElasticSearch) Search(indexs []string, mode string, query []byte) bson.
 	}
 	url.Path = path.Join(url.Path, mode)
 	req, err := http.NewRequest("POST", url.String(), bytes.NewBuffer(query))
+	beego.Debug("Query to ElasticSearch:", string(query))
 	if err != nil {
 		beego.Error("NewRequest Error", err)
 	}
@@ -54,7 +55,6 @@ func (es ElasticSearch) Search(indexs []string, mode string, query []byte) bson.
 	client := &http.Client{}
 
 	resp, err := client.Do(req)
-	beego.Debug(string(query))
 	if err != nil {
 		beego.Error("http client done requests", err)
 	}

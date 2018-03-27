@@ -39,7 +39,7 @@ func (c *ConfigController) Edit() {
 	j := models.EditCfgForm{}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &j); err != nil {
-		beego.Debug("Config Edit:", err)
+		beego.Debug("Config edit error:", err)
 		c.Data["json"] = models.NewErrorInfo(settings.EditCfgFailure)
 		c.ServeJSON()
 		return
@@ -58,7 +58,7 @@ func (c *ConfigController) Del() {
 	j := models.EditCfgForm{}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &j); err != nil {
-		beego.Debug("Config Edit:", err)
+		beego.Debug("Config edit error:", err)
 		c.Data["json"] = models.NewErrorInfo(settings.EditCfgFailure)
 		c.ServeJSON()
 		return
@@ -76,7 +76,7 @@ func (c *ConfigController) Add() {
 	j := models.EditCfgForm{}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &j); err != nil {
-		beego.Debug("Config Add:", err)
+		beego.Debug("Config add error:", err)
 		c.Data["json"] = models.NewErrorInfo(settings.EditCfgFailure)
 		c.ServeJSON()
 		return
