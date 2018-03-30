@@ -10,14 +10,14 @@ Golang环境安装可以[参照](https://github.com/astaxie/build-web-applicatio
 - 编译Agent需要先安装libpcap-devel
 
 **Windows 下编译 Agent 需要 [winpcap](https://www.winpcap.org/install/default.htm) 支持。且受到 [google/gopacket](https://github.com/google/gopacket) 影响可能会出现一些问题，具体请看 [Q&A#Q1](../qa.md#Q1)**
-**Windows 下编译依赖gcc，可以通过[mingw-w64](https://sourceforge.net/projects/mingw-w64/)安装**
+**Windows 下编译依赖gcc，可以通过mingw-w64 [32位](https://jaist.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.3.0/threads-posix/dwarf/i686-7.3.0-release-posix-dwarf-rt_v5-rev0.7z) [64位](https://jaist.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.3.0/threads-posix/seh/x86_64-7.3.0-release-posix-seh-rt_v5-rev0.7z)安装**
 
 
 ## 编译
 ### 客户端（Agent，Daemon、依赖）
 ```
 下载安装对应安装包 https://golang.google.cn/dl/
-# windows 32/64，32位版本须在32位版本win7下编译。Win版本agent代码做了兼容，如只编译32位亦可在64位系统中正常工作。
+# windows 32/64，32位版本须在32位版本win7/2003下编译。Win版本agent代码做了兼容，如只编译32位亦可在64位系统中正常工作。
 cd C:\Go\src
 git clone https://github.com/ysrc/yulong-hids/
 
@@ -54,7 +54,9 @@ go build -o yulong-hids/bin/linux-64/agent --ldflags="-w -s" yulong-hids/agent/a
 go build -o yulong-hids/bin/linux-64/daemon --ldflags="-w -s" yulong-hids/daemon/daemon.go
 ```
 
-> 编译后需压缩为不同系统的zip文件（agent.exe、daemon.exe、data.zip），在向导过程中上传。
+> 编译后需压缩为不同系统的zip文件（如agent.exe、daemon.exe、data.zip），在向导过程中上传。  
+为了方便大家，我们提供了一个编译打包脚本，在build目录下运行 python3 build.py 就能编译并打包。  
+但是由于data.zip中提供的依赖文件不一定适配，可能需要你自行编译，所以这个文件需要手动打包进最终的部署包。
 
 ### 服务端（Server、Web）
 ```
@@ -86,6 +88,9 @@ build
 下下来并安装，yum安装的不一定完全匹配。虽然软链接到不一致的版本也能编译出来ko并加载，但是不知道会不会有影响，
 稳妥起见还是参照上面的做法。
 rpm -ivh kernel-devel-3.10.0-327.el7.x86_64.rpm
+
+debian系的也类似 用 uname -r 的结果替换 4.9.0-3-amd64 
+apt-get install linux-headers-4.9.0-3-amd64
 
 cd /usr/local/go/src/yulong-hids/syscall_hook
 make

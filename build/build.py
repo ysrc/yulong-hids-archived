@@ -2,10 +2,10 @@
 # coding=utf-8
 # by nearg1e (nearg1e.com@gmail[dot]com)
 """
-驭龙hids的编译脚本，一键打包成需要的 release。
+驭龙hids的编译脚本，一键打包成对应的压缩包。
 
-该脚本会在 bin 目录下生成一个 release 文件夹, 文件名为:release_+可读的时间字符串。
-release 目录下文件如下:
+该脚本会在 bin 目录下生成一个 build 文件夹, 文件名为:build_+可读的时间字符串。
+build 目录下文件如下:
 
 ├── agent|agent.exe    当前平台的agent可执行文件
 ├── daemon|daemon.exe  当前平台的daemon可执行文件
@@ -95,7 +95,7 @@ def build(build_path):
         )
         print('[*] stdout & stderr:', output.decode())
     # 移动默认规则到编译目录下
-    rule_src = os.path.join(base_path, 'default_rules.json')
+    rule_src = os.path.join(base_path, 'rules.json')
     rule_dst = os.path.join(build_path, 'rules.json')
     shutil.copyfile(rule_src, rule_dst, follow_symlinks=False)
     # 'app-config-sample.conf' -> 'app.conf'
