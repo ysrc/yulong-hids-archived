@@ -94,6 +94,8 @@ func (c *NoticeController) ChangeStatus() {
 			if err != nil {
 				beego.Error("Model UpdateAll", err)
 				res = false
+			} else {
+				res = true
 			}
 		} else {
 			res = cli.ChangeStatusbyId(form.Id, form.Status)
