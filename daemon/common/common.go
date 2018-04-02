@@ -106,11 +106,8 @@ func InArray(list []string, value string, like bool) bool {
 			if strings.Contains(value, v) {
 				return true
 			}
-		} else {
-			if value == v {
-				return true
-			}
 		}
+		return value == v
 	}
 	return false
 }

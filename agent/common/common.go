@@ -70,11 +70,8 @@ func InArray(list []string, value string, regex bool) bool {
 			} else if err != nil {
 				log.Println(err.Error())
 			}
-		} else {
-			if value == v {
-				return true
-			}
 		}
+		return value == v
 	}
 	return false
 }

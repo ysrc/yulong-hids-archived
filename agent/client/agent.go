@@ -83,10 +83,10 @@ func (a *Agent) Run() {
 
 	// 每隔一段时间更新初始化配置
 	a.configRefresh()
-	
+
 	// 开启各个监控流程 文件监控，网络监控，进程监控
 	a.monitor()
-	
+
 	// 每隔一段时间获取系统信息
 	// 监听端口，服务信息，用户信息，开机启动项，计划任务，登录信息，进程列表等
 	a.getInfo()
@@ -151,18 +151,19 @@ func (a Agent) setLocalIP(ip string) {
 	defer conn.Close()
 	common.LocalIP = strings.Split(conn.LocalAddr().String(), ":")[0]
 }
+
 func (a *Agent) configRefresh() {
 	ticker := time.NewTicker(time.Second * time.Duration(CONFIGR_REF_INTERVAL))
 	go func() {
 		for _ = range ticker.C {
-			ch := make(chan bool)
+			ch := make(chan struct{})
 			go func() {
 				err = a.Client.Call(a.ctx, "GetInfo", &common.ServerInfo, &common.Config)
 				if err != nil {
 					a.log("RPC Client Call:", err.Error())
 					return
 				}
-				ch <- true
+				close(ch)
 			}()
 			// Server集群列表获取
 			select {
