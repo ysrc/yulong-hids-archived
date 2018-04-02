@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"strings"
 	"yulong-hids/web/settings"
 	"yulong-hids/web/utils"
 
@@ -16,6 +17,17 @@ type BaseController struct {
 
 // Prepare access Control, 2FA, csrf check and other security options
 func (c *BaseController) Prepare() {
+
+	// check hostname
+	hostname := beego.AppConfig.String("ylhostname")
+	allowHosts := strings.Split(hostname, ",")
+	if hostname != "" && !utils.StringInSlice(c.Ctx.Input.Host(), allowHosts) {
+		beego.Error("Hostname not correct.")
+		c.Ctx.Output.SetStatus(403)
+		c.Data["json"] = "Forbidden"
+		c.ServeJSON()
+		return
+	}
 
 	// only https be allowed
 	HTTPSOnly, _ := beego.AppConfig.Bool("OnlyHTTPS")

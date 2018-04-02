@@ -41,3 +41,8 @@ experiments/
 __pycache__
 
 .DS_Store
+
+/server/cert.pem
+/server/private.pem
+.gdb_history
+peda-session-web.txt
