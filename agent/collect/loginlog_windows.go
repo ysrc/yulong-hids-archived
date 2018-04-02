@@ -1,5 +1,7 @@
 // +build windows
 
+// 迭代和设计过程：https://mp.weixin.qq.com/s/rHDJ2tQWEaZLikMt5bgCsw
+
 package collect
 
 import (
@@ -251,7 +253,7 @@ func GetLoginLog() (resultData []map[string]string) {
 }
 
 func getSuccessLog(timestamp int64) (resultData []map[string]string) {
-	l, err := newWinEventLog("4625")
+	l, err := newWinEventLog("4624")
 	if err != nil {
 		return
 	}
@@ -277,7 +279,7 @@ func getSuccessLog(timestamp int64) (resultData []map[string]string) {
 	return
 }
 func getFailedLog(timestamp int64) (resultData []map[string]string) {
-	l, err := newWinEventLog("4624")
+	l, err := newWinEventLog("4625")
 	if err != nil {
 		return
 	}
