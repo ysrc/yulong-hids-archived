@@ -153,7 +153,7 @@ discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 
 #### 启动 web
 
-可以直接用 YSRC 编译好的[版本](https://github.com/ysrc/yulong-hids/releases),也可以参照[编译指南](./docs/build.md)自行编译。
+可以直接用 YSRC 编译好的[版本](https://github.com/ysrc/yulong-hids/releases),也可以参照[编译指南](./build.md)自行编译。
 
 cd 进 web 目录
 `cd yulong-hids/web/`
