@@ -59,7 +59,7 @@
           <div class="messaging col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-repeat="notice in noticelist" ng-if="currenttab == $index" ng-hide="currenttab != $index">
             <div class="heading">
               <div class="title">
-                <b>告警详情:</b>  ({{ notice.info }})
+                <b>告警详情:</b>  ({{ notice.info | cutWords:50 }})
                 <span class="{{ style.notice.status[notice.status] }} badge-icon">
                   <i class="fa fa-circle" aria-hidden="true"></i>
                   <span>{{ langtem.notice.data.status[ notice.status ] }}</span>
