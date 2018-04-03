@@ -164,6 +164,8 @@ func (c *InstallController) Post() {
 		}
 	}
 
+	beego.Error("Real step:", step)
+	beego.Error("Current step params:", currentStep)
 	c.Data["json"] = bson.M{"status": false, "msg": "error"}
 	c.ServeJSON()
 	return
