@@ -1,0 +1,29 @@
+version: "2"
+
+services:
+  ids_web:
+    container_name: ids_web
+    build:
+      context: .
+      dockerfile: Dockerfile-web
+    network_mode: "bridge"
+    volumes:
+      - ./web/conf:/conf
+      - ./web/views:/views
+      - ./web/static:/static
+      - ./web/upload_files:/upload_files
+      - ./web/https_cert:/https_cert
+    ports:
+      - 9391:9391
+
+  ids_server:
+    container_name: ids_server
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    environment:
+      - elasticsearch=Elasticsearch:9200
+      - mongodb=mongodb:27017
+    network_mode: "bridge"
+    ports:
+      - 33433:33433
