@@ -109,7 +109,7 @@
                     </div>
                     <div class="key-dl">
                     </div>
-                    <textarea class="jsoncode init-setting" placeholder="此处填写证书文件内容。请先点击‘生成公钥私钥’按钮。" id="cert"></textarea>
+                    <textarea class="jsoncode init-setting" placeholder="此处填写证书文件内容。请先点击‘生成证书’按钮。" id="cert"></textarea>
                     <button id="create-key" class="btn btn-primary btn-lg step-4">
                         生成证书
                     </button>
