@@ -19,27 +19,37 @@ import (
 
 	"github.com/smallnest/rpcx/client"
 	"github.com/smallnest/rpcx/share"
+	"gopkg.in/Shopify/sarama"
 )
 
 var err error
 
 type dataInfo struct {
-	IP     string              // 客户端的IP地址
-	Type   string              // 传输的数据类型
-	System string              // 操作系统
-	Data   []map[string]string // 数据内容
+	IP     string              `json:"ip"`     // 客户端的IP地址
+	Type   string              `json:"type"`   // 传输的数据类型
+	System string              `json:"system"` // 操作系统
+	Data   []map[string]string `json:"data"`   // 数据内容
+}
+
+const sendTopic = "metrics"
+
+// KafkaClient 客户端
+type KafkaClient struct {
+	// 生产者
+	producer sarama.SyncProducer
 }
 
 // Agent agent客户端结构
 type Agent struct {
-	ServerNetLoc string         // 服务端地址 IP:PORT
-	Client       client.XClient // RPC 客户端
-	ServerList   []string       // 存活服务端集群列表
-	PutData      dataInfo       // 要传输的数据
-	Reply        int            // RPC Server 响应结果
-	Mutex        *sync.Mutex    // 安全操作锁
-	IsDebug      bool           // 是否开启debug模式，debug模式打印传输内容和报错信息
-	ctx          context.Context
+	ServerNetLoc  string         // 服务端地址 IP:PORT
+	Client        client.XClient // RPC 客户端
+	ServerList    []string       // 存活服务端集群列表
+	PutData       dataInfo       // 要传输的数据
+	Reply         int            // RPC Server 响应结果
+	Mutex         *sync.Mutex    // 安全操作锁
+	IsDebug       bool           // 是否开启debug模式，debug模式打印传输内容和报错信息
+	KafkaProducer KafkaClient    // kafka生产者
+	ctx           context.Context
 }
 
 var httpClient = &http.Client{
@@ -70,6 +80,18 @@ func (a *Agent) init() {
 	if err != nil {
 		a.log("RPC Client Call Error:", err.Error())
 		panic(1)
+	}
+
+	conf := readConfig()
+	if conf != nil {
+		if brokers := strings.Split(conf.KafkaBroker, ","); brokers != nil {
+			config := sarama.NewConfig()
+			config.Producer.Return.Successes = true
+			a.KafkaProducer, err = sarama.NewSyncProducer(brokers)
+			if err != nil {
+				a.log(err.Error())
+			}
+		}
 	}
 	a.log("Common Client Config:", common.Config)
 }
@@ -263,6 +285,22 @@ func (a Agent) put() {
 	if err != nil {
 		a.log("PutInfo error:", err.Error())
 	}
+
+	// 发送payload至消息队列
+	go func() {
+		if a.KafkaProducer != nil {
+			payload, err := json.Marshal(&a.PutData)
+			if err != nil {
+				a.log(err.Error())
+				return
+			}
+			msg := &sarama.ProducerMessage{Topic: sendTopic, Value: sarama.ByteEncoder(payload)}
+			_, _, err = a.KafkaProducer.SendMessage(msg)
+			if err != nil {
+				a.log(err.Error())
+			}
+		}
+	}()
 }
 
 func (a Agent) mapComparison(new []map[string]string, old []map[string]string) bool {
