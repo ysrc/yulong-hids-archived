@@ -22,8 +22,32 @@ services:
       context: .
       dockerfile: Dockerfile-server
     environment:
-      - elasticsearch=Elasticsearch:9200
+      - elasticsearch=elasticsearch:9200
       - mongodb=mongodb:27017
     network_mode: "bridge"
     ports:
       - 33433:33433
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200
+      - 9300
+    network_mode: "bridge"
+    hostname: "elasticsearch"
+    environment:
+      ES_JAVA_OPTS: "-Xmx1024m -Xms1024m"
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - ./mongodb_data:/data/db
+    ports:
+        - 27017:27017
+    network_mode: "bridge"
+    command: mongod
