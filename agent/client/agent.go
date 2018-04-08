@@ -39,6 +39,20 @@ type Kafka struct {
 	producer sarama.SyncProducer
 }
 
+func newKafkaClient(bs []string) *Kafka {
+	config := sarama.NewConfig()
+	config.Producer.Return.Successes = true
+	pro, err = sarama.NewSyncProducer(brokers)
+	if err != nil {
+		a.log(err.Error())
+		return nil
+	}
+	return &Kafka{
+		producer: pro,
+	}
+}
+
+
 // Agent agent客户端结构
 type Agent struct {
 	ServerNetLoc string         // 服务端地址 IP:PORT
@@ -84,13 +98,11 @@ func (a *Agent) init() {
 	}
 
 	if brokers := strings.Split(a.Brokers, ","); brokers != nil {
-		config := sarama.NewConfig()
-		config.Producer.Return.Successes = true
-		a.KafkaClient, err = sarama.NewSyncProducer(brokers)
-		if err != nil {
-			a.log(err.Error())
+		a.KafkaClient = newKafkaClient()
+		if a.KafkaClient == nil {
+			a.log("Connect to kafka error")
+			panic(1)
 		}
-
 	}
 	a.log("Common Client Config:", common.Config)
 }
@@ -133,6 +145,18 @@ func (a *Agent) newClient() {
 	serverd := client.NewMultipleServersDiscovery(servers)
 	a.Client = client.NewXClient("Watcher", FAILMODE, client.RandomSelect, serverd, option)
 	a.Client.Auth(AUTH_TOKEN)
+}
+
+// 重连kafka
+func (a *Agent) reconnect() {
+	for {
+		a.KafkaClient = newKafkaClient(a.Brokers)
+		if a.KafkaClient != nil {
+			return
+		}
+		// 重连间隔5s
+		time.Sleep(5*time.Second)
+	}
 }
 
 func (a Agent) getServerList() ([]string, error) {
@@ -279,7 +303,7 @@ func (a *Agent) getInfo() {
 	}
 }
 
-func (a Agent) put() {
+func (a *Agent) put() {
 	// 发送payload至消息队列
 	if a.KafkaClient != nil {
 		payload, err := json.Marshal(&a.PutData)
@@ -291,7 +315,11 @@ func (a Agent) put() {
 		_, _, err = a.KafkaClient.producer.SendMessage(msg)
 		if err != nil {
 			a.log("PutInfo error:", err.Error())
+			// reconnect
+			go a.reconnect()
 		}
+	} else {
+		go a.reconnect()
 	}
 }
 

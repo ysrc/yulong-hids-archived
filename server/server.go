@@ -28,18 +28,35 @@ const topic = "metrics"
 
 // Kafka 客户端
 type Kafka struct {
+	brokers  []string
 	consumer sarama.Consumer
 }
+
+var KafkaClient *Kafka
 
 func newKakfaClient(bs []string) *Kafka {
 	config := sarama.NewConfig()
 	conn, err := sarama.NewConsumer(bs, config)
 	if err != nil {
-		log.Fatalf("Connect to kafka error :%s\n", err.Error())
+		log.Println("Connect to kafka error : ", err.Error())
 		return nil
 	}
 	return &Kafka{
+		brokers:  bs,
 		consumer: conn,
+	}
+}
+
+// 重新连接kafka
+func (k *Kafka) reconnect() {
+	for {
+		log.Println("Kafka reconnecting")
+		KafkaClient = newKakfaClient(k.brokers)
+		if KafkaClient != nil {
+			return
+		}
+		// 重连间隔为5s
+		time.Sleep(5 * time.Second)
 	}
 }
 
@@ -56,9 +73,16 @@ func (w *Watcher) GetInfo(ctx context.Context, info *action.ComputerInfo, result
 func (k *Kafka) PutInfo() {
 	cp, err := k.consumer.ConsumePartition(topic, 0, sarama.OffsetNewest)
 	if err != nil {
-		log.Fatalln("Kafka consume error: ", err.Error())
+		log.Println("Kafka consume error: ", err.Error())
 	}
 
+	// 掉线重连
+	defer func() {
+		if e := recover(); e != nil {
+			k.reconnect()
+			go k.PutInfo()
+		}
+	}()
 	// 开始消费数据
 	for {
 		select {
@@ -123,8 +147,10 @@ func main() {
 		return
 	}
 
-	if kafkaClient := newKakfaClient(strings.Split(*brokers, ",")); kafkaClient != nil {
-		go kafkaClient.PutInfo()
+	if KafkaClient = newKakfaClient(strings.Split(*brokers, ",")); KafkaClient != nil {
+		go KafkaClient.PutInfo()
+	} else {
+		log.Fatal("Connect to kafka error")
 	}
 
 	cert, err := tls.LoadX509KeyPair("cert.pem", "private.pem")
