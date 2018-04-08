@@ -342,6 +342,12 @@
 			"revisionTime": "2017-09-26T11:14:11Z"
 		},
 		{
+			"checksumSHA1": "LzZD7/saXD+5IUMF2b+i7dsIdrg=",
+			"path": "gopkg.in/Shopify/sarama",
+			"revision": "cd645bfba7622e7de8971388543ff97ee026aad4",
+			"revisionTime": "2017-12-05T15:08:02Z"
+		},
+		{
 			"checksumSHA1": "YFQU7VULoTU4TwPz3V97b2exyxE=",
 			"path": "gopkg.in/mgo.v2",
 			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",

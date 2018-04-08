@@ -28,11 +28,11 @@ var (
 
 // DataInfo 从agent接收数据的结构
 type DataInfo struct {
-	IP     string
-	Type   string
-	System string
-	Data   []map[string]string
-	Uptime time.Time
+	IP     string              `json:"ip"`
+	Type   string              `json:"type"`
+	System string              `json:"system"`
+	Data   []map[string]string `json:"data"`
+	Uptime time.Time           `json:"uptime"`
 }
 
 type configres struct {
