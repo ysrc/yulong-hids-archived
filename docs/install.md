@@ -13,11 +13,11 @@
 
 ## 部署流程
 
-部署 MongoDB (3.x，驭龙不兼容2.x版本)；
-部署 Elasticsearch (5.x，驭龙暂不兼容6.x版本)；
-启动 MongoDB 、Elasticsearch；
-修改 web 的配置，启动 web ，在引导界面根据提示初始化数据库、规则等；
-启动 server（服务端）；
+部署 MongoDB (3.x，驭龙不兼容2.x版本)；  
+部署 Elasticsearch (5.x，驭龙暂不兼容6.x版本)；  
+启动 MongoDB 、Elasticsearch；  
+修改 web 的配置，启动 web ，在引导界面根据提示初始化数据库、规则等；  
+启动 server（服务端）；  
 部署 daemon （守护进程），启动 agent（客户端）。
 
 ### 部署 MongoDB (3.x，驭龙不兼容2.x版本)；
