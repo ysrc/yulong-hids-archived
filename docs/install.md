@@ -74,6 +74,8 @@ bootstrap.system_call_filter: false
 su - elasticsearch -c '/opt/elasticsearch-5.6.8/bin/elasticsearch -d'
 ```
 
+非单机测试部署可以修改 network.host: 后面的ip，监听对应ip。
+
 curl请求下确认ES启动成功
 
 ```
@@ -143,11 +145,11 @@ discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 
    主要是改3个地方
 
-   管理密码 passwordhex 是密码的32位MD5值；
+   管理密码 passwordhex 是密码的32位MD5值，可以 echo -n password | md5sum 或者去cmd5生成一个替换掉；
 
-   TwoFactorAuthKey 是开启二次验证后，敏感操作都需要Google Authenticator生成的动态口令做二次验证；
+   TwoFactorAuthKey 是开启二次验证后，敏感操作都需要Google Authenticator生成的动态口令做二次验证，请确保服务器跟手机的时间都正确；
 
-   mongodb ip:port 修改为 MongoDB 之前 bind 的 ip:27017，ES修改为ES实例的 ip:9200；
+   mongodb ip:port 修改为 MongoDB 之前 bind 的 ip:27017，ES修改为ES实例的 ip:9200，ip不对会导致web面板报错；
 
    如果需要 web 运行在其他端口，还需要修改对应的 HTTPPort 和 HTTPSPort。
 
@@ -171,10 +173,10 @@ win 版本控制台运行 web.exe 后通过浏览器访问进入向导过程，�
 ![](./auth.png)
 
 ## server 集群
-将 server 二进制文件拷贝到各 server 集群服务器上。  
+将 server 二进制文件拷贝到各 server 集群服务器上，ip不对会导致报错。
 `server -db 10.0.0.134:27017 -es 10.100.100.100:9200`
 
-db 跟MongoDB地址端口，es 跟 Elasticsearch 地址端口。
+如果能正常访问，可以nohup放到后台去运行。db 跟MongoDB地址端口，es 跟 Elasticsearch 地址端口。
 
 > server会在33433端口开放RPC服务，请保持此端口与所有Agent机器通信畅通。  
 
@@ -196,7 +198,8 @@ wget -O /tmp/daemon http://10.100.100.254/json/download?type=daemon\&system=linu
 # 手动卸载
 service yulong-hids stop & /usr/yulong-hids/daemon -uninstall
 
-#调试可以使用，ip跟web的ip
+#如果看不到agent上线，参见下面的命令调试，ip跟web的ip。
+一般来说报错信息都比较明显，server/MongoDB/ES没起，MongoDB/ES连不上之类的。
 agent 10.100.100.254 debug
 ```
 > 目前驭龙系统的设计仅适合服务器场景，不适合部署在线下办公环境 ;

@@ -92,6 +92,10 @@ rpm -ivh kernel-devel-3.10.0-327.el7.x86_64.rpm
 debian系的也类似 用 uname -r 的结果替换 4.9.0-3-amd64 
 apt-get install linux-headers-4.9.0-3-amd64
 
+openSUSE
+zypper install kernel-devel
+
+安装好对应kernel-devel包后cd进目录就可以编译了
 cd /usr/local/go/src/yulong-hids/syscall_hook
 make
 
