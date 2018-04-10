@@ -8,11 +8,13 @@ RUN go build -o ./server/server --ldflags='-w -s -linkmode external -extldflags 
 FROM alpine
 MAINTAINER Jason Cooper "mrderek@protonmail.com"
 COPY --from=builder /go/src/yulong-hids/server/server .
+COPY --from=builder /go/src/yulong-hids/server/.dockerstart.sh /start.sh
 RUN apk update
 RUN apk upgrade
 RUN apk add ca-certificates && update-ca-certificates
 RUN apk add --update tzdata
+RUN apk add curl
 ENV TZ=Asia/Shanghai
 RUN rm -rf /var/cache/apk/*
-RUN chmod +x server
-ENTRYPOINT for i in $(seq 1 5);do echo "Wait for ElasticSearch Start...$i"; curl -s http://$IDS_ELASTICSEARCH> /dev/null ; if [ $? = 0 ];then break; fi; sleep 1; if [ $i == 5 ];then echo "Too much retry, exit."; exit 1; fi; done; ./server -db $IDS_MONGODB -es $IDS_ELASTICSEARCH
+RUN chmod +x /server /start.sh
+ENTRYPOINT /start.sh

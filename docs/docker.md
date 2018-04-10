@@ -21,7 +21,7 @@
 $ git clone https://github.com/ysrc/yulong-hids.git
 ```
 
-#### Step2. 初次运行
+#### Step2. 初次编译并运行
 
 ```
 $ cd yulong-hids/
@@ -32,6 +32,8 @@ $ docker-compose up
 
 
 > 第一次启动时由于 Server 需要配置文件不存在会导致启动失败，不要慌，只要保证 web、mongo、es 正常启动即可
+
+> 如果提示获取 docker image 失败，请检查网络并重试，或者给 docker pull 挂上 http/https 代理
 
 #### Step3. 通过 Web 界面初始化
 
