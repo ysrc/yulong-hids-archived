@@ -11,7 +11,7 @@ UNICODE_STRING          devNameUnicd;
 UNICODE_STRING          devLinkUnicd;
 PVOID                    gpEventObject = NULL;           
 ULONG                    ProcessNameOffset = 0;
-PVOID                    outBuf[255];
+CHAR                    outBuf[255];
 BOOL                    g_bMainThread;
 ULONG                    g_dwParentId;
 CHECKLIST                CheckList;
@@ -81,6 +81,8 @@ NTSTATUS GetRegValue(PCWSTR RegPath, PCWSTR ValueName, PWCHAR Value)
     if (!NT_SUCCESS(Status))
     {
         DbgPrint("zwqueryvaluekey error:%08x\n", Status);
+        ExFreePool(valueInfoP);
+        ZwClose(KeyHandle);
         return Status;
     }
     else
@@ -89,7 +91,6 @@ NTSTATUS GetRegValue(PCWSTR RegPath, PCWSTR ValueName, PWCHAR Value)
         ReturnValue = 1;
     }
 
-    if (!valueInfoP);
     ExFreePool(valueInfoP);
     ZwClose(KeyHandle);
     return ReturnValue;
@@ -119,11 +120,16 @@ VOID ThreadCreateMon(IN HANDLE PId, IN HANDLE TId, IN BOOLEAN  bCreate)
             &PEProcess);
         if (!NT_SUCCESS(status))
         {
+            ObDereferenceObject(EProcess);
             DbgPrint("error\n");
             return;
         }
-        if (PId == 4)    
+        if (PId == 4) 
+        {
+            ObDereferenceObject(PEProcess);
+            ObDereferenceObject(EProcess);
             return;
+        }
         if ((g_bMainThread == TRUE)
             && (g_dwParentId != dwParentPID)
             && (dwParentPID != PId)
@@ -134,11 +140,15 @@ VOID ThreadCreateMon(IN HANDLE PId, IN HANDLE TId, IN BOOLEAN  bCreate)
                 (char *)((char *)EProcess + ProcessNameOffset),
                 PId,
                 (char *)((char *)PEProcess + ProcessNameOffset), dwParentPID);
-            if (gpEventObject != NULL)
+            if (gpEventObject != NULL) 
                 KeSetEvent((PRKEVENT)gpEventObject, 0, FALSE);
         }
-        if (CheckList.ONLYSHOWREMOTETHREAD)   
+        if (CheckList.ONLYSHOWREMOTETHREAD) 
+        {
+            ObDereferenceObject(PEProcess);
+            ObDereferenceObject(EProcess);
             return;
+        }
         DbgPrint("thread|%s|%d|%s|%d\n",
             (char *)((char *)EProcess + ProcessNameOffset),
             PId,
@@ -147,8 +157,10 @@ VOID ThreadCreateMon(IN HANDLE PId, IN HANDLE TId, IN BOOLEAN  bCreate)
             (char *)((char *)EProcess + ProcessNameOffset),
             PId,
             (char *)((char *)PEProcess + ProcessNameOffset), dwParentPID);
-        if (gpEventObject != NULL)
+        if (gpEventObject != NULL) 
             KeSetEvent((PRKEVENT)gpEventObject, 0, FALSE);
+        
+        ObDereferenceObject(PEProcess);
     }
     else if (CheckList.SHOWTERMINATETHREAD)
     {
@@ -157,6 +169,7 @@ VOID ThreadCreateMon(IN HANDLE PId, IN HANDLE TId, IN BOOLEAN  bCreate)
         if (gpEventObject != NULL)
             KeSetEvent((PRKEVENT)gpEventObject, 0, FALSE);
     }
+    ObDereferenceObject(EProcess);
 }
 
 
@@ -178,6 +191,7 @@ VOID ProcessCreateMon(HANDLE hParentId, HANDLE PId, BOOLEAN bCreate)
     if (!NT_SUCCESS(status))
     {
         DbgPrint("error\n");
+        ObDereferenceObject(EProcess);
         return;
     }
 
@@ -196,7 +210,7 @@ VOID ProcessCreateMon(HANDLE hParentId, HANDLE PId, BOOLEAN bCreate)
             (char *)((char *)PProcess + ProcessNameOffset),
             hParentId
             );
-        if (gpEventObject != NULL)
+        if (gpEventObject != NULL) 
             KeSetEvent((PRKEVENT)gpEventObject, 0, FALSE);
     }
     else if (CheckList.SHOWTERMINATEPROCESS)
@@ -207,26 +221,30 @@ VOID ProcessCreateMon(HANDLE hParentId, HANDLE PId, BOOLEAN bCreate)
             KeSetEvent((PRKEVENT)gpEventObject, 0, FALSE);
     }
 
+    ObDereferenceObject(PProcess);
+    ObDereferenceObject(EProcess);
 }
 
 NTSTATUS OnUnload(IN PDRIVER_OBJECT pDriverObject)
 {
     NTSTATUS            status;
+    
     DbgPrint("OnUnload called\n");
+    
     if (gpEventObject)
+    {
         ObDereferenceObject(gpEventObject);
+    }
+
     PsSetCreateProcessNotifyRoutine(ProcessCreateMon, TRUE);
     PsRemoveCreateThreadNotifyRoutine(ThreadCreateMon);
+    IoDeleteSymbolicLink(&devLinkUnicd);
+    
     if (pDriverObject->DeviceObject != NULL)
     {
-        status = IoDeleteSymbolicLink(&devLinkUnicd);
-        if (!NT_SUCCESS(status))
-        {
-            DbgPrint(("IoDeleteSymbolicLink() failed\n"));
-            return status;
-        }
         IoDeleteDevice(pDriverObject->DeviceObject);
     }
+    
     return STATUS_SUCCESS;
 }
 
@@ -270,7 +288,7 @@ NTSTATUS DeviceIoControlDispatch(
                 KernelMode,
                 &gpEventObject,
                 &objHandleInfo);
-
+            
             if (status != STATUS_SUCCESS)
             {
                 DbgPrint("wrong\n");
@@ -335,18 +353,17 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject, IN PUNICODE_STRING theRegi
     if (!NT_SUCCESS(Status))
     {
         DbgPrint(("Can not create device.\n"));
-        return Status;
+        goto out;
     }
 
     Status = IoCreateSymbolicLink(&devLinkUnicd, &devNameUnicd);
     if (!NT_SUCCESS(Status))
     {
         DbgPrint(("Cannot create link.\n"));
-        return Status;
+        goto CleanDevice;
     }
 
     ProcessNameOffset = GetProcessNameOffset();
-
     pDriverObject->DriverUnload = OnUnload;
     pDriverObject->MajorFunction[IRP_MJ_CREATE] =
         pDriverObject->MajorFunction[IRP_MJ_CLOSE] =
@@ -356,13 +373,26 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject, IN PUNICODE_STRING theRegi
     if (!NT_SUCCESS(Status))
     {
         DbgPrint("PsSetCreateProcessNotifyRoutine error\n");
-        return Status;
+        goto CleanSymbolLink;
     }
     Status = PsSetCreateThreadNotifyRoutine(ThreadCreateMon);
     if (!NT_SUCCESS(Status))
     {
         DbgPrint("PsSetCreateThreadNotifyRoutine error\n");
-        return Status;
+        goto CleanProcessNotify;
     }
+
     return STATUS_SUCCESS;
+
+CleanProcessNotify:
+    PsSetCreateProcessNotifyRoutine(ProcessCreateMon, TRUE);
+CleanSymbolLink:
+    IoDeleteSymbolicLink(&devLinkUnicd);
+CleanDevice:
+    if (pDriverObject->DeviceObject != NULL) 
+    {
+        IoDeleteDevice(pDriverObject->DeviceObject);
+    }
+out:
+    return Status;
 }
