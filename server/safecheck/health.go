@@ -38,6 +38,8 @@ func cleanThread() {
 				log.Println(err.Error())
 			}
 		}
+
+		time.Sleep(time.Second * 60)
 	}
 }
 
