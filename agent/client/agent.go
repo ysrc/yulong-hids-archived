@@ -42,7 +42,7 @@ type Kafka struct {
 func newKafkaClient(bs []string) *Kafka {
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
-	pro, err = sarama.NewSyncProducer(brokers)
+	pro, err := sarama.NewSyncProducer(brokers)
 	if err != nil {
 		a.log(err.Error())
 		return nil
