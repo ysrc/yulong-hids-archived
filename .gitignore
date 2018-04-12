@@ -46,3 +46,4 @@ __pycache__
 /server/private.pem
 .gdb_history
 peda-session-web.txt
+mongodb_data/
