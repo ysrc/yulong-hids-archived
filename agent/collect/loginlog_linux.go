@@ -97,6 +97,6 @@ func getLastb(t string) (result []map[string]string) {
 }
 func GetLoginLog() (resultData []map[string]string) {
 	resultData = getLast(common.Config.Lasttime)
-	resultData = append(resultData, getLast(common.Config.Lasttime)...)
+	resultData = append(resultData, getLastb(common.Config.Lasttime)...)
 	return
 }
