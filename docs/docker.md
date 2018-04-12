@@ -43,7 +43,7 @@ $ docker-compose up
 
 登录名 | 密码 | 二次验证秘钥
 :-: | :-: | :-:
-`yulong` | `All_life_is_a_game_of_luck.` | `IVFHGS2OGYTXIVDGEIZWCNC2MVMHYWDRK44GOQALPNJHGRS6FE2QUCT4`
+`yulong` | `All_life_is_a_game_of_luck.` | <img src="./docker_totp_default.png" style="width:128px;"> `IVFHGS2OGYTXIVDGEIZWCNC2MVMHYWDRK44GOQALPNJHGRS6FE2QUCT4`
 
 值得一提的是，初始化的第3步所需要上传的文件需前往[Release发布页](https://github.com/ysrc/yulong-hids/releases) 下载发行版 zip 包，并解压，然后上传对应的 `win-32.zip`,`win-64.zip`,`linux-64.zip` 即可。
 
@@ -67,6 +67,37 @@ Creating ids_server                     ... done
 
 浏览器打开 http://192.168.1.101 就可以看到正常功能的界面了.
 
+#### Step5. 启动Server调校程序
+
+**这一步是Docker版本特有，其它方式不需要**
+
+> 由于 Docker 使用的 network 是 bridge 方式，server 的 getLocalIP 方法中只能获取到 container 内部的 IP, agent 中通过 getserverlist 拿到的 IP 地址是不对的，所以需要额外走这一步来调整 Server IP 地址
+
+1.根据**宿主机(物理机)**的操作系统，下载对应的程序:
+
+Adapter | 可执行文件 MD5
+:-- | :--
+[Windows_amd64](https://sec.ly.com/mirror/yulong_server_docker_adapter_win_x64.zip)| `6cd550b9443be8f6c19dc58b460ef877`
+[Linux_amd64](https://sec.ly.com/mirror/yulong_server_docker_adapter_linux_amd64.zip) | `c2775b65c24b479c138e14338fc893d1`
+[Mac_amd64](https://sec.ly.com/mirror/yulong_server_docker_adapter_darwin_amd64.zip) | `d7ca534fb0b553dedd6d8327d4e329bb`
+ 
+ 其它操作系统的自行下载源码编译，可执行文件源码地址：[yulong_server_docker_adapter.go](https://gist.github.com/Medicean/8ffd6babb42b8078064d8306069aee79)
+
+ > Docker 不支持 32 位操作系统，所以没有32位的版本
+
+2.在**宿主机(物理机)**上面执行该程序
+
+以 Linux 为例:
+
+```
+$ ./yulong_server_docker_adapter_linux_amd64
+```
+
+> 如果宿主机无法联网，那么需要手动指定宿主机的IP地址，使用 `-ip` 参数即可.
+> 
+> 嫌文件名长的话自己改名 = =
+
+ 这个程序需要一直运行，所以可以使用 nohup 或者 screen 来执行，具体方法就不在赘述了.
 
 ### 其它
 
@@ -82,3 +113,6 @@ Agent 连接 Server 请直接参考真机布署文档即可
 
 **A2**: 在 yulong-hids 目录下执行: `docker-compose stop`
 
+**Q3**: 怎么修改 web 的配置文件?
+
+**A3**: 需要进入容器中进行修改: `$ docker exec -it ids_web /bin/sh` 然后用 vi 去编辑
