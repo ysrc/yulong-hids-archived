@@ -43,7 +43,7 @@ $ docker-compose up
 
 登录名 | 密码 | 二次验证秘钥
 :-: | :-: | :-:
-`yulong` | `All_life_is_a_game_of_luck.` | <img src="./docker_totp_default.png" style="width:128px;"> `IVFHGS2OGYTXIVDGEIZWCNC2MVMHYWDRK44GOQALPNJHGRS6FE2QUCT4`
+`yulong` | `All_life_is_a_game_of_luck.` | <img src="./docker_totp_default.png" width="128px"> `IVFHGS2OGYTXIVDGEIZWCNC2MVMHYWDRK44GOQALPNJHGRS6FE2QUCT4`
 
 值得一提的是，初始化的第3步所需要上传的文件需前往[Release发布页](https://github.com/ysrc/yulong-hids/releases) 下载发行版 zip 包，并解压，然后上传对应的 `win-32.zip`,`win-64.zip`,`linux-64.zip` 即可。
 
