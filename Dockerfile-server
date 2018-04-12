@@ -7,16 +7,14 @@ RUN go build -o ./server/server --ldflags='-w -s -linkmode external -extldflags 
 
 FROM alpine
 MAINTAINER Jason Cooper "mrderek@protonmail.com"
-ARG mongodb
-ARG elasticsearch
-ENV mongodb=$mongodb
-ENV elasticsearch=$elasticsearch
 COPY --from=builder /go/src/yulong-hids/server/server .
+COPY --from=builder /go/src/yulong-hids/server/.dockerstart.sh /start.sh
 RUN apk update
 RUN apk upgrade
 RUN apk add ca-certificates && update-ca-certificates
 RUN apk add --update tzdata
+RUN apk add curl
 ENV TZ=Asia/Shanghai
 RUN rm -rf /var/cache/apk/*
-RUN chmod +x server
-ENTRYPOINT ./server -db $mongodb -es $elasticsearch
+RUN chmod +x /server /start.sh
+ENTRYPOINT /start.sh

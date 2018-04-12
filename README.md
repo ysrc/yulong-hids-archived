@@ -16,6 +16,7 @@
 ## 文档
 
 * [部署文档](./docs/install.md)
+* [Docker快速体验部署文档](./docs/docker.md)
 * [使用帮助](./docs/help.md)
 * [规则编写](./docs/rule.md)
 * [编译指南](./docs/build.md)

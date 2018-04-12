@@ -7,16 +7,16 @@ RUN go build -o ./web/web --ldflags='-w -s -linkmode external -extldflags "-stat
 
 FROM alpine
 MAINTAINER Jason Cooper "mrderek@protonmail.com"
-COPY --from=builder /go/src/yulong-hids/web/web .
-COPY --from=builder /go/src/yulong-hids/web/views .
-COPY --from=builder /go/src/yulong-hids/web/static .
-COPY --from=builder /go/src/yulong-hids/web/https_cert .
-RUN mkdir /upload_files
+RUN mkdir /web
+WORKDIR /web
+COPY --from=builder /go/src/yulong-hids/web/ .
+RUN cp ./conf/app-config-sample.conf ./conf/app.conf
 RUN apk update
 RUN apk upgrade
 RUN apk add ca-certificates && update-ca-certificates
+RUN apk add openssl
 RUN apk add --update tzdata
 ENV TZ=Asia/Shanghai
 RUN rm -rf /var/cache/apk/*
-RUN chmod +x web
+RUN chmod +x /web/web
 ENTRYPOINT [ "./web" ]
