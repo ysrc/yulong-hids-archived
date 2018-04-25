@@ -52,7 +52,7 @@
     </div>
 
     <button class="icon append-icon" id="addbutton" ng-click="toggle_command()">
-        <i class="fa fa-plus" aria-hidden="true" title="添加过滤器"></i>
+        <i class="fa fa-plus" aria-hidden="true" title="显示或隐藏安装命令"></i>
     </button>
 
     <button class="icon append-icon" id="searchbutton" ng-click="add_filter()">
