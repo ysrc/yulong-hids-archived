@@ -970,6 +970,10 @@ hostw.controller('hostlist', function ($scope, $http, Notification) {
     $scope.toggle_command = function () {
         $scope.command_show = !$scope.command_show;
     }
+    // hosts 为空时，默认显示安装 agent 命令
+    if ($scope.hosts.length == 0) {
+        $scope.toggle_command();
+    }
 
     default_history = ["windows", "linux", "web", "db", "offline", "online", "can-not-push"]
     $scope.history = default_history.concat(localStorage.host_filter_history.split(":::"));
