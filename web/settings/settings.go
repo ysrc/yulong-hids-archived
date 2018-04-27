@@ -4,7 +4,7 @@ import "gopkg.in/mgo.v2/bson"
 
 var (
 	// Version 版本号
-	Version = "v0.4.3 BETA"
+	Version = "v0.4.4 BETA"
 
 	// SystemArray System参数白名单
 	SystemArray = []string{"linux", "windows"}

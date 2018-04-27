@@ -1,0 +1,65 @@
+version: "2"
+
+services:
+  ids_web:
+    container_name: ids_web
+    build:
+      context: .
+      dockerfile: Dockerfile-web
+    environment:
+      - IDS_ELASTICSEARCH_URL=http://ids_elasticsearch:9200
+      - IDS_MONGODB_URL=mongodb://ids_mongodb:27017/agent
+    network_mode: "bridge"
+    # volumes:
+    #   - ./web/:/web/
+    depends_on:
+      - ids_mongodb
+      - ids_elasticsearch
+    links:
+      - ids_mongodb
+      - ids_elasticsearch
+    ports:
+      - 80:80
+      - 443:443
+
+  ids_server:
+    container_name: ids_server
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    environment:
+      - IDS_ELASTICSEARCH=ids_elasticsearch:9200
+      - IDS_MONGODB=ids_mongodb:27017
+    network_mode: "bridge"
+    depends_on:
+      - ids_mongodb
+      - ids_elasticsearch
+    links:
+      - ids_mongodb
+      - ids_elasticsearch
+    ports:
+      - 33433:33433
+
+  ids_elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+      - 9300:9300
+    network_mode: "bridge"
+    hostname: "ids_elasticsearch"
+    environment:
+      ES_JAVA_OPTS: "-Xmx1024m -Xms1024m"
+
+  ids_mongodb:
+    image: mongo:latest
+    container_name: "ids_mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - ./mongodb_data:/data/db
+    ports:
+      - 27017:27017
+    network_mode: "bridge"
+    command: mongod

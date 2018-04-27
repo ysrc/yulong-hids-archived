@@ -26,7 +26,7 @@ func cleanThread() {
 		var offlineIPList []string
 		err := client.Find(bson.M{"uptime": bson.M{"$lte": time.Now().Add(time.Hour * time.Duration(-72))}}).Distinct("ip", &offlineIPList)
 		if err != nil {
-			log.Println(err.Error())
+			log.Println("Mongodb query error in cleanThread:", err.Error())
 		}
 		if len(offlineIPList) >= 100 {
 			time.Sleep(time.Second * 60)
@@ -35,9 +35,11 @@ func cleanThread() {
 		for _, ip := range offlineIPList {
 			err = models.DB.C("client").Remove(bson.M{"ip": ip})
 			if err != nil {
-				log.Println(err.Error())
+				log.Println("Mongodb remove error in cleanThread:", err.Error())
 			}
 		}
+
+		time.Sleep(time.Second * 60)
 	}
 }
 
