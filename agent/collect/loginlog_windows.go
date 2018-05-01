@@ -1,5 +1,5 @@
 // +build windows
-// 迭代和设计过程：https://mp.weixin.qq.com/s/rHDJ2tQWEaZLikMt5bgCsw=
+// 迭代和设计过程：https://mp.weixin.qq.com/s/rHDJ2tQWEaZLikMt5bgCsw
 
 package collect
 
