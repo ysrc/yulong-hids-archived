@@ -1,6 +1,5 @@
 // +build windows
-
-// 迭代和设计过程：https://mp.weixin.qq.com/s/rHDJ2tQWEaZLikMt5bgCsw
+// 迭代和设计过程：https://mp.weixin.qq.com/s/rHDJ2tQWEaZLikMt5bgCsw=
 
 package collect
 
@@ -265,13 +264,13 @@ func getSuccessLog(timestamp int64) (resultData []map[string]string) {
 	for _, rec := range reList {
 		// rec.EventData.Pairs[10].Value != "5" &&
 		if rec.TimeCreated.SystemTime.Local().Unix() > timestamp {
-			if common.InArray(localAddress, rec.EventData.Pairs[19].Value, false) {
+			if common.InArray(localAddress, rec.EventData.Pairs[18].Value, false) {
 				continue
 			}
 			m := make(map[string]string)
 			m["status"] = "true"
 			m["username"] = rec.EventData.Pairs[5].Value
-			m["remote"] = rec.EventData.Pairs[19].Value
+			m["remote"] = rec.EventData.Pairs[18].Value
 			m["time"] = rec.TimeCreated.SystemTime.Local().Format("2006-01-02T15:04:05Z07:00")
 			resultData = append(resultData, m)
 		}
