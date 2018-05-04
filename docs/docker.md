@@ -116,3 +116,13 @@ Agent 连接 Server 请直接参考真机布署文档即可
 **Q3**: 怎么修改 web 的配置文件?
 
 **A3**: 需要进入容器中进行修改: `$ docker exec -it ids_web /bin/sh` 然后用 vi 去编辑
+
+
+**Q4**: 编译出现 parsing reference 错误怎么办？具体如下
+
+```
+Building ids_web
+Step 1/20 : FROM golang:1.10 as builder
+ERROR: Service 'ids_web' failed to build: Error parsing reference: "golang:1.10 as builder" is not a valid repository/tag: invalid reference format
+```
+**A4**: 是因为你的 docker-ce 版本太低导致，升级至 docker-ce >= 18, 具体看本文档最上方 **依赖** 项
