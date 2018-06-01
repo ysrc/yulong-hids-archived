@@ -23,7 +23,7 @@ type stats struct {
 }
 
 // ScanChan 待检测队列
-var ScanChan = make(chan models.DataInfo, 64)
+var ScanChan = make(chan models.DataInfo, 4096)
 var cache []string
 
 // Check 检测引擎结构
@@ -279,17 +279,20 @@ func (c *Check) Run() {
 // ScanMonitorThread 安全检测线程
 func ScanMonitorThread() {
 	log.Println("Start Scan Thread")
-	c := new(Check)
-	c.CStatistics = models.DB.C("statistics")
-	c.CNoice = models.DB.C("notice")
-	go func() {
-		ticker := time.NewTicker(time.Second * 60)
-		for _ = range ticker.C {
-			cache = []string{}
-		}
-	}()
-	for {
-		c.Info = <-ScanChan
-		c.Run()
+	// 10个检测goroutine
+	for i := 0; i < 10; i++ {
+		go func() {
+			c := new(Check)
+			c.CStatistics = models.DB.C("statistics")
+			c.CNoice = models.DB.C("notice")
+			for {
+				c.Info = <-ScanChan
+				c.Run()
+			}
+		}()
+	}
+	ticker := time.NewTicker(time.Second * 60)
+	for _ = range ticker.C {
+		cache = []string{}
 	}
 }
