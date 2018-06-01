@@ -231,16 +231,19 @@ func init() {
 //InsertThread ES异步写入线程
 func InsertThread() {
 	var data esData
+	p, err := Client.BulkProcessor().
+		Name("YulongWorker-1").
+		Workers(2).
+		BulkActions(100).                // commit if # requests >= 100
+		BulkSize(2 << 20).               // commit if size of requests >= 2 MB
+		FlushInterval(30 * time.Second). // commit every 30s
+		Do(context.Background())
+	if err != nil {
+		log.Println("start BulkProcessor: ", err)
+	}
 	for {
 		data = <-esChan
-		_, err := Client.Index().
-			Index(nowindicesName).
-			Type(data.dataType).
-			BodyJson(data.data).
-			Do(context.Background())
-		if err != nil {
-			log.Println("insert es error: ", err)
-		}
+		p.Add(elastic.NewBulkIndexRequest().Index(nowindicesName).Type(data.dataType).Doc(data.data))
 	}
 }
 
