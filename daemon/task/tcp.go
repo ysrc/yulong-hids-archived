@@ -19,7 +19,7 @@ type taskServer struct {
 }
 
 func (t *taskServer) listen() (err error) {
-	t.TCPListener, err = net.Listen("tcp", common.ADDRESS)
+	t.TCPListener, err = net.Listen("tcp", common.BindAddr())
 	return err
 }
 

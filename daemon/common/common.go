@@ -9,6 +9,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"net"
+	"strings"
+	"fmt"
 
 	"github.com/axgle/mahonia"
 	"github.com/kardianos/service"
@@ -113,4 +116,14 @@ func InArray(list []string, value string, like bool) bool {
 		}
 	}
 	return false
+}
+
+// 获取一个可以绑定的内网IP
+func BindAddr() string{
+    // 通过连接一个可达的任何一个地址，获取本地的内网的地址
+	conn, _ := net.Dial("udp", "114.114.114.114:53")
+	defer conn.Close()
+	localAddr := conn.LocalAddr().String()
+	idx := strings.LastIndex(localAddr, ":")
+	return fmt.Sprintf("%s:65512", localAddr[0:idx])
 }
