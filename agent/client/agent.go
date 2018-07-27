@@ -149,8 +149,36 @@ func (a Agent) setLocalIP(ip string) {
 		panic(1)
 	}
 	defer conn.Close()
-	common.LocalIP = strings.Split(conn.LocalAddr().String(), ":")[0]
+	if a.isAliYun() {
+		common.LocalIP=a.getExternalIP()
+    } else {
+        common.LocalIP = strings.Split(conn.LocalAddr().String(), ":")[0]
+    }
+	//
+	
 }
+
+func  (a Agent) getExternalIP(ip string) {
+	resp, err := http.Get("http://myip.ipip.net")
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	content, _ := ioutil.ReadAll(resp.Body)
+	return strings.Split(strings.Split(content,"：")[1]," ")[0]
+}
+
+
+func  (a Agent) isAliYun(result bool) {
+	file, err := os.Open("/etc/motd")
+	if err != nil {
+		a.log("Error:", err)
+	}
+	defer file.Close()
+	data, _ := ioutil.ReadAll(file)
+	return strings.Contains(data,"Alibaba")
+}
+
 func (a *Agent) configRefresh() {
 	ticker := time.NewTicker(time.Second * time.Duration(CONFIGR_REF_INTERVAL))
 	go func() {
