@@ -142,6 +142,7 @@ func (a Agent) getServerList() ([]string, error) {
 }
 
 func (a Agent) setLocalIP(ip string) {
+	var isAliyunECS bool
 	conn, err := net.Dial("tcp", ip)
 	if err != nil {
 		a.log("Net.Dial:", ip)
@@ -149,7 +150,8 @@ func (a Agent) setLocalIP(ip string) {
 		panic(1)
 	}
 	defer conn.Close()
-	if a.isAliYun() {
+	isAliyunECS=a.isAliYun()
+	if isAliyunECS {
 		common.LocalIP=a.getExternalIP()
     } else {
         common.LocalIP = strings.Split(conn.LocalAddr().String(), ":")[0]
@@ -158,25 +160,23 @@ func (a Agent) setLocalIP(ip string) {
 	
 }
 
-func  (a Agent) getExternalIP(ip string) {
+func  (a Agent) getExternalIP()(ip string) {
 	resp, err := http.Get("http://myip.ipip.net")
 	if err != nil {
 		return ""
 	}
 	defer resp.Body.Close()
 	content, _ := ioutil.ReadAll(resp.Body)
-	return strings.Split(strings.Split(content,"：")[1]," ")[0]
+	return strings.Split(strings.Split(string(content),"：")[1]," ")[0]
 }
 
 
-func  (a Agent) isAliYun(result bool) {
-	file, err := os.Open("/etc/motd")
+func  (a Agent) isAliYun()(result bool) {
+	data, err := ioutil.ReadFile("/etc/motd")
 	if err != nil {
 		a.log("Error:", err)
 	}
-	defer file.Close()
-	data, _ := ioutil.ReadAll(file)
-	return strings.Contains(data,"Alibaba")
+	return strings.Contains(string(data),"Alibaba")
 }
 
 func (a *Agent) configRefresh() {
