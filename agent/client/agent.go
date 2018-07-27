@@ -42,6 +42,10 @@ type Agent struct {
 	ctx          context.Context
 }
 
+type EX_IP struct {
+	IP     string              // 外部IP地址
+}
+
 var httpClient = &http.Client{
 	Timeout:   time.Second * 10,
 	Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
@@ -162,25 +166,28 @@ func (a Agent) setLocalIP(ip string) {
 
 func  (a Agent) getExternalIP()(ip string) {
 	var url string
-	var ip string
+	var response_json EX_IP
 	url = "http://" + a.ServerNetLoc + SERVER_API_IP
 	a.log("Web API:", url)
 	request, _ := http.NewRequest("GET", url, nil)
 	request.Close = true
 	resp, err := httpClient.Do(request)
 	if err != nil {
-		return nil, err
+		a.log("Error:", err)
+		panic(1)
 	}
 	defer resp.Body.Close()
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		a.log("Error:", err)
+		panic(1)
 	}
-	err = json.Unmarshal([]byte(result), &ip)
+	err = json.Unmarshal([]byte(result), &response_json)
 	if err != nil {
-		return nil, err
+		a.log("Error:", err)
+		panic(1)
 	}
-	return ip.ip
+	return strings.Split(response_json.IP,":")[0]
 	
 }
 
