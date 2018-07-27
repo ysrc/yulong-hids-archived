@@ -161,13 +161,27 @@ func (a Agent) setLocalIP(ip string) {
 }
 
 func  (a Agent) getExternalIP()(ip string) {
-	resp, err := http.Get("http://myip.ipip.net")
+	var url string
+	var ip string
+	url = "http://" + a.ServerNetLoc + SERVER_API_IP
+	a.log("Web API:", url)
+	request, _ := http.NewRequest("GET", url, nil)
+	request.Close = true
+	resp, err := httpClient.Do(request)
 	if err != nil {
-		return ""
+		return nil, err
 	}
 	defer resp.Body.Close()
-	content, _ := ioutil.ReadAll(resp.Body)
-	return strings.Split(strings.Split(string(content),"：")[1]," ")[0]
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal([]byte(result), &ip)
+	if err != nil {
+		return nil, err
+	}
+	return ip.ip
+	
 }
 
 
