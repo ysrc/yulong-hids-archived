@@ -11,6 +11,7 @@ func init() {
 		beego.NSRouter("/client", &controllers.ClientController{}),
 		beego.NSRouter("/download", &controllers.DloadController{}),
 		beego.NSRouter("/serverlist", &controllers.AgentApiController{}),
+		beego.NSRouter("/myip", &controllers.AgentApiController{}),
 		beego.NSRouter("/publickey", &controllers.AgentApiController{}),
 		beego.NSRouter("/dbinfo", &controllers.AgentApiController{}),
 		beego.NSRouter("/statistics", &controllers.StatisticsController{}),
