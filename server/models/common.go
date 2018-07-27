@@ -17,6 +17,7 @@ var (
 	DB      *mgo.Database
 	mongodb *string
 	es      *string
+	BindAddr *string
 	// Config 配置信息
 	Config serverConfig
 	// LocalIP 本机活动IP
@@ -111,6 +112,7 @@ type ruleInfo struct {
 func init() {
 	mongodb = flag.String("db", "", "mongodb ip:port")
 	es = flag.String("es", "", "elasticsearch ip:port")
+    BindAddr = flag.String("addr", ":33433", "server bind addr")
 	flag.Parse()
 	if len(os.Args) <= 2 {
 		flag.PrintDefaults()

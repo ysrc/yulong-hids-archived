@@ -84,7 +84,7 @@ func main() {
 	s.AuthFunc = auth
 	s.RegisterName("Watcher", new(Watcher), "")
 	log.Println("RPC Server started")
-	err = s.Serve("tcp", ":33433")
+	err = s.Serve("tcp", *models.BindAddr)
 	if err != nil {
 		log.Println(err.Error())
 	}
