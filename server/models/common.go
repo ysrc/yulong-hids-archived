@@ -110,7 +110,8 @@ type ruleInfo struct {
 }
 
 func init() {
-	mongodb = flag.String("db", "", "mongodb ip:port")
+    // 可以传递mongodb 的连接字符串，也可以自带用户名密码
+	mongodb = flag.String("db", "", "mongodb ip:port or mongodb connection string")
 	es = flag.String("es", "", "elasticsearch ip:port")
     BindAddr = flag.String("addr", ":33433", "server bind addr")
 	flag.Parse()
