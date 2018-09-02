@@ -49,11 +49,22 @@ func (c *BaseController) Prepare() {
 
 	// two factor auth check
 	tfaSwitch, _ := beego.AppConfig.Bool("TwoFactorAuth")
+	var first uint32
 	if c.Ctx.Input.Method() != "GET" &&
 		tfaSwitch && !WatchModeExempt(c) &&
 		utils.FindSub(settings.AuthURILst, c.Ctx.Input.URL()) != "" {
 		serverside := utils.GetPassword(beego.AppConfig.String("TwoFactorAuthKey"))
 		beego.Debug("GetPassword: ", serverside)
+		// push
+		settings.TFAPassHistorys = append(settings.TFAPassHistorys, serverside)
+		// pop
+		first, settings.TFAPassHistorys = settings.TFAPassHistorys[0], settings.TFAPassHistorys[1:]
+		// only allow to try 6 times
+		if first == serverside {
+			c.Data["json"] = bson.M{"status": false, "msg": "尝试次数太多，请等待30秒后再进行验证"}
+			c.ServeJSON()
+			return
+		}
 		clientside, err := c.GetUint32("pass")
 		if err != nil || serverside != clientside {
 			c.Data["json"] = bson.M{"status": false, "msg": "验证密码为空或者验证密码不正确，请重新输入双因子验证密码"}
