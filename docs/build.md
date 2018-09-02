@@ -15,9 +15,12 @@ Golang环境安装可以[参照](https://github.com/astaxie/build-web-applicatio
 
 ## 编译
 ### 客户端（Agent，Daemon、依赖）
+
+- 下载安装对应安装包 https://golang.google.cn/dl/ 安装 golang 
+- windows 下编译需注意：32位版本须在 32 位版本 win7/2003 下编译。Win版本 agent 代码做了兼容，如只编译32位亦可在64位系统中正常工作
+- `go get github.com/ysrc/yulong-hids` 之后在 `{gopath}/src/github.com/ysrc/yulong-hids` 下的项目编译后是会出现预期外异常的，请根据接下来的指导文档进行编译。
+
 ```
-下载安装对应安装包 https://golang.google.cn/dl/
-# windows 32/64，32位版本须在32位版本win7/2003下编译。Win版本agent代码做了兼容，如只编译32位亦可在64位系统中正常工作。
 cd C:\Go\src
 git clone https://github.com/ysrc/yulong-hids/
 
@@ -30,18 +33,18 @@ go build -o yulong-hids\bin\win-64\daemon.exe --ldflags="-w -s" yulong-hids\daem
 
 ```
 # linux 64
-下载并解压
+// 下载并解压
 wget https://dl.google.com/go/go1.10.linux-amd64.tar.gz && tar -zxvf go1.10.linux-amd64.tar.gz -C /usr/local/
 
 sudo vi /etc/profile 
-并添加下面的内容：
+// 并添加下面的内容：
 
 export GOROOT=/usr/local/go
 export GOBIN=$GOROOT/bin
 export PATH=$PATH:$GOBIN
 export GOPATH=$HOME/gopath (可选设置)
 
-重新加载 profile 文件
+// 重新加载 profile 文件
 source /etc/profile
 
 cd /usr/local/go/src
