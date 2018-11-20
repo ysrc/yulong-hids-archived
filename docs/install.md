@@ -20,81 +20,183 @@
 启动 server（服务端）；  
 部署 daemon （守护进程），启动 agent（客户端）。
 
-### 部署 MongoDB (3.x，驭龙不兼容2.x版本)；
 
-下载对应安装包 https://www.mongodb.com/download-center?jmp=nav#community
 
-以 centos 上部署为例，如果报错，请去掉 --fork 查看原因。
+安装过程中会尽可能使用国内镜像源以加快安装速度。
+
+### 部署 MongoDB (3.x，驭龙不兼容2.x版本)
+
+#### Debian/Ubuntu 用户
+
+* 首先信任 MongoDB 的公钥：
+
+```shell
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+```
+
+* 然后根据自己的 Debian/Ubuntu 版本，将相应的内容写入 `/etc/apt/sources.list.d/mongodb.list` 中，如果此文件不存在，创建之：
 
 ```
-mkdir /var/lib/mongodb/ && mkdir /var/log/mongodb && wget https://sec.ly.com/mirror/mongodb-linux-x86_64-3.6.3.tgz && tar -xvzf mongodb-linux-x86_64-3.6.3.tgz && mongodb-linux-x86_64-3.6.3/bin/mongod --dbpath /var/lib/mongodb/ --logpath /var/log/mongodb.log --fork --bind_ip 10.0.0.134
+# Ubuntu 14.04 LTS
+deb https://mirrors.tuna.tsinghua.edu.cn/mongodb/apt/ubuntu trusty/mongodb-org/stable multiverse
 ```
 
-从 MongoDB 3.6版本开始，出于安全考虑，如果不指定实例绑定ip，默认是 bind 到 localhost  (127.0.0.1)的。
+```
+# Ubuntu 16.04 LTS
+deb https://mirrors.tuna.tsinghua.edu.cn/mongodb/apt/ubuntu xenial/mongodb-org/stable multiverse
+```
 
-**但是驭龙 MongoDB 这边必需 bind_ip 指定非 localhost (127.0.0.1)的本机ip，否则后面会出错。**
+```
+# Ubuntu 18.04 LTS
+deb https://mirrors.tuna.tsinghua.edu.cn/mongodb/apt/ubuntu bionic/mongodb-org/stable multiverse
+```
+
+```shell
+# Debian 7
+deb http://mirrors.tuna.tsinghua.edu.cn/mongodb/apt/debian wheezy/mongodb-org/stable main
+```
+
+* 然后就可以安装相应版本的 mongodb 了：
+
+```shell
+$ sudo apt update
+$ sudo apt install mongodb-org
+```
+
+默认安装的版本为 `3.2.21`。
+
+#### RHEL/CentOS 用户
+
+* 首先新建文件 `/etc/yum.repos.d/mongodb.repo`，并写入以下内容：
+
+```shell
+[mongodb-org]
+name=MongoDB Repository
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mongodb/yum/el$releasever/
+gpgcheck=0
+enabled=1
+```
+
+* 然后刷新包缓存并安装即可：
+
+```shell
+$ sudo yum makecache
+$ sudo yum install mongodb-org
+```
+
+默认安装的版本为 `3.2.21`。
+
+
+
+然后修改配置文件 `/etc/mongo.conf` 中的 `bindIp` 字段，将 `MongoDb` 绑定在本机的局域网 IP 上。
+
+**驭龙 MongoDB 这边必需 bindIp 指定非 localhost （127.0.0.1）的本机 IP，否则后面会出错。**
 
 > MongoDB 服务器需配置防火墙策略只允许 Server 集群和 Web 服务器的连接。
 
-### 部署 Elasticsearch (5.x，驭龙暂不兼容6.x版本)
+最后启动 MongoDB。在支持 `systemd` 的操作系统上（比如 CentOS 7、Ubuntu 16.04 及以上）使用 `systemctl` 启动，在不支持 `systemd` 的操作系统上使用 `service` 命令启动：
 
-下载安装[jre](https://www.java.com/zh_CN/download/manual.jsp)依赖， 因为官网下载较慢，这边缓存了一份。
-
-```
-wget https://sec.ly.com/mirror/jre-8u161-linux-x64.rpm && yum -y localinstall jre-8u161-linux-x64.rpm
-```
-
-下载ES并解压
-
-```
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.8.tar.gz && tar -zxvf elasticsearch-5.6.8.tar.gz -C /opt
+```shell
+# CentOS7, Ubuntu 16.04, Ubuntu 18.04
+$ sudo systemctl start mongod.service
+# Ubuntu 14.04
+$ sudo service mongod start
 ```
 
-Elasticsearch 不建议以 root 权限运行，新建一个非 root 权限用户，-p 后跟自行设定的密码
 
-```
-groupadd elasticsearch && useradd elasticsearch -g elasticsearch -p ElasticSearch666
+
+### 部署 Elasticsearch（5.x，驭龙暂不兼容 6.x 版本）
+
+* 因为 Elasticsearch 使用 Java 开发，所以需要安装 Java 8 或者更高。通过包管理器可直接安装。CentOS 7、Ubuntu 16.04 及以上的官方仓库中 openjdk 的版本已经为 Java 8，所以可以直接安装，对应的包名为 `java-1.8.0-openjdk-headless`（CentOS 7）和 `openjdk-8-jre-headless`。Ubuntu 14.04 的官方仓库源中为 Java 7，需要添加 PPA 源进行安装：
+
+```shell
+# For Ubuntu 14.04
+$ sudo add-apt-repository ppa:openjdk-r/ppa
+$ sudo apt update
+$ sudo apt install openjdk-8-jre-headless
 ```
 
-修改文件夹及内部文件的所属用户及组为 elasticsearch:elasticsearch
+* 导入 Elasticsearch 的签名公钥：
 
-```
-chown -R elasticsearch:elasticsearch /opt/elasticsearch-5.6.8
+```shell
+# RHEL/CentOS 用户
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+# Debian/Ubuntu 用户
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 ```
 
-centos7 以下的系统需编辑 config/elasticsearch.yml 添加 
+* 然后创建相应的仓库信息文件：
+
+  * 对于 RHEL/CentOS 用户，创建文件 `/etc/yum.repos.d/elasticsearch.repo` 并加入以下内容：
+
+  ```shell
+  [elasticsearch-5.x]
+  name=Elasticsearch repository for 5.x packages
+  baseurl=https://mirrors.tuna.tsinghua.edu.cn/elasticstack/5.x/yum
+  gpgcheck=1
+  gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  enabled=1
+  autorefresh=1
+  type=rpm-md
+  ```
+
+  * 对于 Debian/Ubuntu 用户，创建文件 `/etc/apt/sources.list.d/elastic-5.x.list` 并加入以下内容：
+
+  ```shell
+  deb https://mirrors.tuna.tsinghua.edu.cn/elasticstack/5.x/apt stable main
+  ```
+
+* 然后更新软件仓库，安装：
+
+```shell
+# RHEL/CentOS 用户
+$ sudo yum makecache
+$ sudo yum install elasticsearch
+
+# Debian/Ubuntu 用户
+$ sudo apt update
+$ sudo apt install elasticsearch
+```
+
+默认安装的版本为 `5.6.13`。配置文件目录路径为 `/etc/elasticsearch`。
+
+* 修改配置文件 `/etc/elasticsearch/elasticsearch.yml` 加入以下内容：
 
 ```
 bootstrap.system_call_filter: false
 ```
 
-启动es
+* Elasticsearch 的 JVM 配置文件默认指定的虚拟机内存大小为 2G，所以如果你的机器内存不够大，需要调整 JVM 参数。修改配置文件 `/etc/elasticsearch/jvm.options` 的以下两项以调整：
 
 ```
-su - elasticsearch -c '/opt/elasticsearch-5.6.8/bin/elasticsearch -d'
+-Xms512m
+-Xmx512m
 ```
 
-非单机测试部署可以修改 network.host: 后面的ip，监听对应ip。
+* 最后启动 elasticsearch：
 
-curl请求下确认ES启动成功
-
+```shell
+# systemd 用户
+sudo systemctl start elasticsearch.service
+# SysV init 用户
+sudo service elasticsearch start
 ```
-curl -XGET -s "http://localhost:9200/_cluster/health?pretty"
-```
 
-#### ES集群部署
+通过命令 `curl -XGET -s "http://localhost:9200/_cluster/health?pretty"` 可判断是否成功启动。
+
+#### ES 集群部署
 
 如果只有几百台机器，单节点ES就足够；部署实例较多的话，ES就需要集群部署了。
 
 以5000台服务器为例子，需准备好8台服务器左右。如果单ES实例配置较高，数量可以减少，可根据服务器资源情况调整节点角色和配置。
 
- - client node 1台（10.100.100.100）
- - master node 2台（10.100.100.101-102）
- - data node 其余的5台（10.100.100.103-107）
+- client node 1台（10.100.100.100）
+- master node 2台（10.100.100.101-102）
+- data node 其余的5台（10.100.100.103-107）
 
-**配置文件：**  
+分别修改配置文件 `/etc/elasticsearch/elasticsearch.yml`：
 
-##### client node
+* client node
 
 ```
 cluster.name: yulonghids
@@ -104,7 +206,8 @@ node.data: false
 # 监听的IP地址
 network.host: 10.100.100.100
 ```
-##### master node
+
+* master node
 
 ```
 cluster.name: yulonghids
@@ -118,7 +221,8 @@ node.data: true
 network.host: 10.100.100.101
 discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 ```
-##### data node
+
+* data node
 
 ```
 cluster.name: yulonghids
@@ -134,39 +238,44 @@ discovery.zen.ping.unicast.hosts: ["10.100.100.100"]
 
 > ES服务器需配置防火墙策略只允许集群之间和Server以及Web服务器的连接（9200,9300端口）。
 
+
+
+
+
 ### web 配置
 
  - 将 web 目录拷贝到 WebServer 服务器上，单台机器测试也可以都在一台机子上。
 
- - 修改 web 的配置，必须改名为 app.conf
+ - 修改 web 的配置：必须改名为 app.conf：
 
-   `mv yulong-hids/web/conf/app-config-sample.conf yulong-hids/web/conf/app.conf`
-   `vi yulong-hids/web/conf/app.conf`
+   * 首先将 `app-config-sample.conf` 重命名为 `app.conf`，接着修改 `app.conf`：
 
-   主要是改3个地方
+   ```shell
+   $ mv yulong-hids/web/conf/app-config-sample.conf yulong-hids/web/conf/app.conf
+   ```
 
-   管理密码 passwordhex 是密码的32位MD5值，可以 echo -n password | md5sum 或者去cmd5生成一个替换掉；
+   * 管理密码 passwordhex 是密码的 32 位 MD5 值，可以 `echo -n password | md5sum` 或者去 cmd5 生成一个替换掉；
 
-   TwoFactorAuthKey 是开启二次验证后，敏感操作都需要Google Authenticator生成的动态口令做二次验证，请确保服务器跟手机的时间都正确；
+   * TwoFactorAuthKey 是开启二次验证后，敏感操作都需要 Google Authenticator 生成的动态口令做二次验证，请确保服务器跟手机的时间都正确；
 
-   mongodb ip:port 修改为 MongoDB 之前 bind 的 ip:27017，ES修改为ES实例的 ip:9200，ip不对会导致web面板报错；
+   * 将 mongodb 部分的 ip 和 port 修改为 MongoDB 配置文件中设置的 ip 和 port；
+   * ES 修改为 ES 实例对应的 ip:9200，ip 不对会导致 web 面板报错；
 
-   如果需要 web 运行在其他端口，还需要修改对应的 HTTPPort 和 HTTPSPort。
+   * 如果需要 web 运行在其他端口，还需要修改对应的 HTTPPort 和 HTTPSPort。
 
 #### 启动 web
 
 可以直接用 YSRC 编译好的[版本](https://github.com/ysrc/yulong-hids/releases),也可以参照[编译指南](./build.md)自行编译。
 
-cd 进 web 目录
-`cd yulong-hids/web/`
+* 进入 web 目录然后执行 `./web` 即可启动。注意启动前要保证 `web` 可执行程序具有执行权限。
 
-`./web`  启动 web，如果是下的编译好的二进制需要赋予执行权限 `chmod +x web/web`
+如果能正常访问，可以放到后台去运行：
 
-如果能正常访问，可以放到后台去运行。
+```shell
+$ nohup ./web &
+```
 
-`nohup ./web &`
-
-win 版本控制台运行 web.exe 后通过浏览器访问进入向导过程，根据向导提示进行即可。
+* win 版本控制台运行 web.exe 后通过浏览器访问进入向导过程，根据向导提示进行即可。
 
 > TwoFactorAuthKey 使用 Google Authenticator，需在手机中安装并导入生成的base32编码的密钥（如图），具体生成方式见 app.conf 注释，开启后敏感操作均需通过生成的动态口令进行二次验证。
 
