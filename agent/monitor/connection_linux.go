@@ -77,9 +77,7 @@ static void extract_type_1_socket_inode(const char lname[], long * inode_p) {
 
 
 static char * pget(unsigned uid,long inode) {
-    DIR *d = opendir("/proc");
-    if(NULL == d) return "";
-	long inode_p;
+    long inode_p;
     char statline[1024];
     char cmdline[1024];
     struct dirent *de;
@@ -124,6 +122,8 @@ static char * pget(unsigned uid,long inode) {
 				PATH_FD_SUFFl + 1);
 			strcpy(line + procfdlen + 1, direfd->d_name);
 			lnamelen = readlink(line, lname, sizeof(lname)-1);
+			if(lnamelen == -1)
+				continue;
 			lname[lnamelen] = '\0';
 			extract_type_1_socket_inode(lname, &inode_p);
 			if (inode_p == inode)
@@ -150,11 +150,15 @@ static char * pget(unsigned uid,long inode) {
 				}
 
 				snprintf(finbuf, sizeof(finbuf), "%s/%s", direproc->d_name, cmdlp);
+				closedir(dirfd);
+				closedir(dirproc);
 				return finbuf;
 			}
 		}
+		closedir(dirfd);
 	}
-    return "";
+	closedir(dirproc);
+    	return "";
 }
 char *s;
 static char * filter(char *host, int port) {
