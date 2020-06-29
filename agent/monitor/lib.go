@@ -117,6 +117,7 @@ func iterationWatcher(monList []string, watcher *fsnotify.Watcher, pathList []st
 	}
 }
 
+// isFileWhite param @resultdata key list: [source, action, path, hash, user]
 func isFileWhite(resultdata map[string]string) bool {
 	for _, v := range common.Config.Filter.File {
 		if ok, _ := regexp.MatchString(`^[0-9a-zA-Z]{32}$`, v); ok {
@@ -124,7 +125,7 @@ func isFileWhite(resultdata map[string]string) bool {
 				return true
 			}
 		} else {
-			if ok, _ := regexp.MatchString(v, strings.ToLower(resultdata["file"])); ok {
+			if ok, _ := regexp.MatchString(v, strings.ToLower(resultdata["path"])); ok {
 				return true
 			}
 		}
