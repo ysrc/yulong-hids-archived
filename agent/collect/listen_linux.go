@@ -22,24 +22,25 @@ func GetListening() (resultData []map[string]string) {
 		m := make(map[string]string)
 		reg := regexp.MustCompile("\\s+")
 		info = reg.ReplaceAllString(strings.TrimSpace(info), " ")
-		s := strings.Split(info, " ")
+		//s := strings.Split(info, " ")
+		s := strings.SplitN(info, " ", 6) //修复ss -lnpt 进程名字为空导致panic
 		if len(s) < 6 {
 			continue
 		}
 		m["proto"] = "TCP"
-		if strings.Contains(s[3],"::"){
+		if strings.Contains(s[3], "::") {
 			m["address"] = strings.Replace(s[3], "::", "0.0.0.0", 1)
-		}else{
+		} else {
 			m["address"] = strings.Replace(s[3], "*", "0.0.0.0", 1)
 		}
 		b := false
-		for _,v:= range resultData{
-			if v["address"] == m["address"]{
+		for _, v := range resultData {
+			if v["address"] == m["address"] {
 				b = true
 				break
 			}
 		}
-		if b{
+		if b {
 			continue
 		}
 		reg = regexp.MustCompile(`users:\(\("(.*?)",(.*?),.*?\)`)
