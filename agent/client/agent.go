@@ -42,6 +42,10 @@ type Agent struct {
 	ctx          context.Context
 }
 
+type EX_IP struct {
+	IP     string              // 外部IP地址
+}
+
 var httpClient = &http.Client{
 	Timeout:   time.Second * 10,
 	Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
@@ -142,6 +146,7 @@ func (a Agent) getServerList() ([]string, error) {
 }
 
 func (a Agent) setLocalIP(ip string) {
+	var isAliyunECS bool
 	conn, err := net.Dial("tcp", ip)
 	if err != nil {
 		a.log("Net.Dial:", ip)
@@ -149,8 +154,52 @@ func (a Agent) setLocalIP(ip string) {
 		panic(1)
 	}
 	defer conn.Close()
-	common.LocalIP = strings.Split(conn.LocalAddr().String(), ":")[0]
+	isAliyunECS=a.isAliYun()
+	if isAliyunECS {
+		common.LocalIP=a.getExternalIP()
+    } else {
+        common.LocalIP = strings.Split(conn.LocalAddr().String(), ":")[0]
+    }
+	//
+	
 }
+
+func  (a Agent) getExternalIP()(ip string) {
+	var url string
+	var response_json EX_IP
+	url = "http://" + a.ServerNetLoc + SERVER_API_IP
+	a.log("Web API:", url)
+	request, _ := http.NewRequest("GET", url, nil)
+	request.Close = true
+	resp, err := httpClient.Do(request)
+	if err != nil {
+		a.log("Error:", err)
+		panic(1)
+	}
+	defer resp.Body.Close()
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		a.log("Error:", err)
+		panic(1)
+	}
+	err = json.Unmarshal([]byte(result), &response_json)
+	if err != nil {
+		a.log("Error:", err)
+		panic(1)
+	}
+	return strings.Split(response_json.IP,":")[0]
+	
+}
+
+
+func  (a Agent) isAliYun()(result bool) {
+	data, err := ioutil.ReadFile("/etc/motd")
+	if err != nil {
+		a.log("Error:", err)
+	}
+	return strings.Contains(string(data),"Alibaba")
+}
+
 func (a *Agent) configRefresh() {
 	ticker := time.NewTicker(time.Second * time.Duration(CONFIGR_REF_INTERVAL))
 	go func() {

@@ -7,5 +7,6 @@ const (
 	CONFIGR_REF_INTERVAL int             = 60
 	FAILMODE             client.FailMode = client.Failtry
 	SERVER_API           string          = "/json/serverlist"
+	SERVER_API_IP        string          ="/json/myip"
 	TESTMODE             bool            = false
 )

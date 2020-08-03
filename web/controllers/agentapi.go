@@ -40,6 +40,10 @@ func (c *AgentApiController) Get() {
 		c.Data["json"] = GetAliveServerList()
 	}
 
+	if strings.Contains(currentURL, "myip") {
+		c.Data["json"] = bson.M{"ip": c.Ctx.Request.RemoteAddr}
+	}
+
 	if strings.Contains(currentURL, "dbinfo") {
 		esurl := beego.AppConfig.String("elastic_search::baseurl")
 		mgourl := beego.AppConfig.String("mongodb::url")
